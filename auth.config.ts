@@ -25,14 +25,14 @@ const authConfig = {
             });
             const user = response.data;
             if (user) {
-              console.log({ user });
-              return user;
+              if (user.role.roleName === 'Admin') {
+                return user;
+              }
             } else {
               return null;
             }
           }
         } catch (error) {
-          console.error(error);
           return null;
         }
       }
