@@ -1,35 +1,69 @@
 import { NextAuthConfig } from 'next-auth';
 import CredentialProvider from 'next-auth/providers/credentials';
+import { login } from './app/api/auth/auth.api';
+import { LoginSchema } from './schemas';
 
 const authConfig = {
   providers: [
     CredentialProvider({
       credentials: {
         email: {
-          type: 'email'
+          type: 'text'
         },
         password: {
           type: 'password'
         }
       },
       async authorize(credentials, req) {
-        const user = {
-          id: '1',
-          name: 'John',
-          email: credentials?.email as string
-        };
-        if (user) {
-          // Any object returned will be saved in `user` property of the JWT
-          return user;
-        } else {
-          // If you return null then an error will be displayed advising the user to check their details.
+        try {
+          const validatedFields = LoginSchema.safeParse(credentials);
+          if (validatedFields.success) {
+            const { email, password } = validatedFields.data;
+            const response = await login({
+              email: email,
+              password: password
+            });
+            const user = response.data;
+            if (user) {
+              console.log({ user });
+              return user;
+            } else {
+              return null;
+            }
+          }
+        } catch (error) {
+          console.error(error);
           return null;
-
-          // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
         }
       }
     })
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.userId = user.userId;
+        token.username = user.username;
+        token.fullname = user.fullname;
+        token.emailVerify = user.emailVerify;
+        token.role = user.role;
+        token.token = user.token;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session?.user) {
+        session.user.id = token.userId;
+        session.user.username = token.username;
+        session.user.name = token.fullname;
+        session.user.emailVerify = token.emailVerify;
+        session.user.role = token.role;
+        session.user.token = token.token;
+        session.user.fullname = token.fullname;
+      }
+      return session;
+    }
+  },
+  session: { strategy: 'jwt', maxAge: 60 * 60 * 24 * 7 },
   pages: {
     signIn: '/' //sigin page
   }

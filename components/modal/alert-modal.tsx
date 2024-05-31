@@ -6,18 +6,23 @@ import { Modal } from '@/components/ui/modal';
 interface AlertModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm: (id: string) => void;
   loading: boolean;
+  userId: string;
 }
 
 export const AlertModal: React.FC<AlertModalProps> = ({
   isOpen,
   onClose,
   onConfirm,
-  loading
+  loading,
+  userId
 }) => {
   const [isMounted, setIsMounted] = useState(false);
 
+  const handleConfirm = () => {
+    onConfirm(userId);
+  };
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -37,7 +42,11 @@ export const AlertModal: React.FC<AlertModalProps> = ({
         <Button disabled={loading} variant="outline" onClick={onClose}>
           Cancel
         </Button>
-        <Button disabled={loading} variant="destructive" onClick={onConfirm}>
+        <Button
+          disabled={loading}
+          variant="destructive"
+          onClick={handleConfirm}
+        >
           Continue
         </Button>
       </div>

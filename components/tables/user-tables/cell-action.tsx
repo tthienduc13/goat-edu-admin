@@ -1,4 +1,5 @@
 'use client';
+import { deleteUserById } from '@/app/api/user/user.api';
 import { AlertModal } from '@/components/modal/alert-modal';
 import { Button } from '@/components/ui/button';
 import {
@@ -8,13 +9,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { User } from '@/constants/data';
+import { UserList } from '@/types/users';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 interface CellActionProps {
-  data: User;
+  data: UserList;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -22,7 +23,18 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
-  const onConfirm = async () => {};
+  const onConfirm = async (userId: string) => {
+    setLoading(true);
+    try {
+      await deleteUserById(userId);
+      window.location.reload();
+      router.refresh();
+    } catch (error) {
+    } finally {
+      setLoading(false);
+      setOpen(false);
+    }
+  };
 
   return (
     <>
@@ -31,6 +43,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         onClose={() => setOpen(false)}
         onConfirm={onConfirm}
         loading={loading}
+        userId={data.id}
       />
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>

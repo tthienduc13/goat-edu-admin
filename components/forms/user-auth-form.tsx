@@ -17,7 +17,8 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 const formSchema = z.object({
-  email: z.string().email({ message: 'Enter a valid email address' })
+  email: z.string(),
+  password: z.string()
 });
 
 type UserFormValue = z.infer<typeof formSchema>;
@@ -26,17 +27,14 @@ export default function UserAuthForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl');
   const [loading, setLoading] = useState(false);
-  const defaultValues = {
-    email: 'demo@gmail.com'
-  };
   const form = useForm<UserFormValue>({
-    resolver: zodResolver(formSchema),
-    defaultValues
+    resolver: zodResolver(formSchema)
   });
 
   const onSubmit = async (data: UserFormValue) => {
     signIn('credentials', {
       email: data.email,
+      password: data.password,
       callbackUrl: callbackUrl ?? '/dashboard'
     });
   };
@@ -53,11 +51,29 @@ export default function UserAuthForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>Email or username</FormLabel>
                 <FormControl>
                   <Input
-                    type="email"
-                    placeholder="Enter your email..."
+                    type="text"
+                    placeholder="Enter your email or username..."
+                    disabled={loading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder="Enter your password..."
                     disabled={loading}
                     {...field}
                   />
@@ -68,7 +84,7 @@ export default function UserAuthForm() {
           />
 
           <Button disabled={loading} className="ml-auto w-full" type="submit">
-            Continue With Email
+            Login
           </Button>
         </form>
       </Form>

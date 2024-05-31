@@ -17,7 +17,6 @@ import {
   TableRow
 } from '@/components/ui/table';
 import { Input } from './input';
-import { Button } from './button';
 import { ScrollArea, ScrollBar } from './scroll-area';
 
 interface DataTableProps<TData, TValue> {
@@ -102,7 +101,7 @@ export function DataTable<TData, TValue>({
         </Table>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
-      <div className="flex items-center justify-end space-x-2 py-4">
+      {/* <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{' '}
           {table.getFilteredRowModel().rows.length} row(s) selected.
@@ -111,21 +110,21 @@ export function DataTable<TData, TValue>({
           <Button
             variant="outline"
             size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
+            onClick={() => handlePreviousPage()}
+            disabled={!handlePreviousPage()}
           >
             Previous
           </Button>
           <Button
             variant="outline"
             size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
+            onClick={() => handleNextPage()}
+            disabled={!handleNextPage()}
           >
             Next
           </Button>
         </div>
-      </div>
+      </div> */}
     </>
   );
 }
