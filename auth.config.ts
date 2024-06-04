@@ -14,7 +14,7 @@ const authConfig = {
           type: 'password'
         }
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         try {
           const validatedFields = LoginSchema.safeParse(credentials);
           if (validatedFields.success) {
