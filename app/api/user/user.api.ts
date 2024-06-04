@@ -1,32 +1,73 @@
-import { axiosClientUpload } from '@/lib/axiosClient';
+import { AddModerSchema } from '@/schemas';
+import axiosClient from '@/lib/axiosClient';
+import * as z from 'zod';
 
 const ENDPOINT = {
-  GET_USER: '/admin/user?',
-  DELETE_USER: '/admin/user?id='
+  GET_AUTHORIZE_USER: '/admin/authorize/user?',
+  GET_MODERATION: 'admin/moderator?',
+  DELETE_USER: '/admin/user?id=',
+  ADD_MODERATOR: '/admin/user'
 };
 
-export const getUser = async (pageSize: number, pageNumber: number) => {
-  const response = await axiosClientUpload.get(
-    `${ENDPOINT.GET_USER}PageSize=${pageSize}&PageNumber=${pageNumber}`,
+export const getAuthorizeUser = async (
+  pageSize: number,
+  pageNumber: number,
+  token: string | undefined
+) => {
+  const response = await axiosClient.get(
+    `${ENDPOINT.GET_AUTHORIZE_USER}page_size=${pageSize}&page_number=${pageNumber}`,
     {
       headers: {
-        Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRoYW5oZGVwdHJhaSIsIlVzZXJJZCI6ImY0OTFjMGJjLWU1YjAtNGZjNy1hY2JmLWNiMDFlYjQzZWVjZSIsIlJvbGVJZCI6IjE5MDU5OGZlLWRmMzEtNGVhMi1hYmUzLWFiOTA1MGJlMDY5ZSIsInJvbGUiOiJBZG1pbiIsIkZ1bGxuYW1lIjoiTmd1eWVuVGhhbmgiLCJuYmYiOjE3MTcwNTgzNDEsImV4cCI6MTcxNzY2MzE0MSwiaWF0IjoxNzE3MDU4MzQxLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjQyMDAifQ.g55iKZX53rF517AtfML_LDv6HPElYMdvVDW-Z4IUPhc'
+        Authorization: `Bearer ${token}`
       }
     }
   );
   return response.data;
 };
 
-export const deleteUserById = async (id: string) => {
-  const response = await axiosClientUpload.delete(
-    `${ENDPOINT.DELETE_USER}${id}`,
+export const getModer = async (
+  pageSize: number,
+  pageNumber: number,
+  token: string | undefined
+) => {
+  const response = await axiosClient.get(
+    `${ENDPOINT.GET_MODERATION}page_size=${pageSize}&page_number=${pageNumber}`,
     {
       headers: {
-        Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRoYW5oZGVwdHJhaSIsIlVzZXJJZCI6ImY0OTFjMGJjLWU1YjAtNGZjNy1hY2JmLWNiMDFlYjQzZWVjZSIsIlJvbGVJZCI6IjE5MDU5OGZlLWRmMzEtNGVhMi1hYmUzLWFiOTA1MGJlMDY5ZSIsInJvbGUiOiJBZG1pbiIsIkZ1bGxuYW1lIjoiTmd1eWVuVGhhbmgiLCJuYmYiOjE3MTcwNTgzNDEsImV4cCI6MTcxNzY2MzE0MSwiaWF0IjoxNzE3MDU4MzQxLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjQyMDAifQ.g55iKZX53rF517AtfML_LDv6HPElYMdvVDW-Z4IUPhc'
+        Authorization: `Bearer ${token}`
       }
     }
   );
+  return response.data;
+};
+
+export const deleteUserById = async (id: string, token: string | undefined) => {
+  const response = await axiosClient.delete(`${ENDPOINT.DELETE_USER}${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+  return response.data;
+};
+
+export const addModer = async (
+  values: z.infer<typeof AddModerSchema>,
+  token: string | undefined
+) => {
+  const response = await axiosClient.post(
+    ENDPOINT.ADD_MODERATOR,
+    {
+      username: values.username,
+      email: values.email,
+      fullName: values.fullname,
+      phoneNumber: values.phoneNumber
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  );
+  console.log(response.status);
   return response.data;
 };

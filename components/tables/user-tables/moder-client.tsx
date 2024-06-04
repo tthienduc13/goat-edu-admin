@@ -3,31 +3,34 @@ import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
+import { Plus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { columns } from './columns';
 import { useEffect, useState } from 'react';
 import { UserTableData, UserListInfor } from '@/types/users';
-import { getAuthorizeUser } from '@/app/api/user/user.api';
 import {
   Pagination,
   PaginationContent,
   PaginationItem,
   PaginationLink
 } from '@/components/ui/pagination';
-import { Input } from '@/components/ui/input';
 import { useSession } from 'next-auth/react';
+import { getModer } from '@/app/api/user/user.api';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Input } from '@/components/ui/input';
 
-export const UserClient = () => {
+export const ModerClient = () => {
+  const router = useRouter();
   // Array of users
   const [userList, setUserList] = useState<UserTableData[]>([]);
 
   // Information of response which included an array of users
   const [userListInfor, setUserListInfor] = useState<UserListInfor>();
-
   const [currentPageNum, setCurrentPageNum] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<number>(1);
+
   const session = useSession();
   const handleNextPage = () => {
     setCurrentPageNum(currentPageNum + 1);
@@ -38,7 +41,6 @@ export const UserClient = () => {
       setCurrentPageNum(currentPageNum - 1);
     }
   };
-
   const handlePageClick = () => {
     setIsEdit(true);
   };
@@ -71,7 +73,7 @@ export const UserClient = () => {
       if (session.data !== null) {
         try {
           setIsLoading(true);
-          const response = await getAuthorizeUser(
+          const response = await getModer(
             10,
             currentPageNum,
             session.data.user?.token
@@ -82,7 +84,6 @@ export const UserClient = () => {
             phoneNumber: item.phoneNumber ?? 'No data'
           }));
           setUserList(formatData);
-          // console.log(userList);
         } catch (error) {
         } finally {
           setIsLoading(false);
@@ -103,10 +104,17 @@ export const UserClient = () => {
           </div>
         ) : (
           <Heading
-            title={`Users (${userListInfor?.totalCount})`}
-            description="Manage users (Client side table functionalities.)"
+            title={`Moderators (${userListInfor?.totalCount})`}
+            description="Manage moderators (Client side table functionalities.)"
           />
         )}
+
+        <Button
+          className="text-xs md:text-sm"
+          onClick={() => router.push(`/dashboard/user/new`)}
+        >
+          <Plus className="mr-2 h-4 w-4" /> Add New
+        </Button>
       </div>
       <Separator />
       <DataTable

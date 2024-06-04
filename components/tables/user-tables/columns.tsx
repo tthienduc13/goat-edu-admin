@@ -2,9 +2,9 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { CellAction } from './cell-action';
 import { Checkbox } from '@/components/ui/checkbox';
-import { UserList } from '@/types/users';
+import { UserTableData } from '@/types/users';
 
-export const columns: ColumnDef<UserList>[] = [
+export const columns: ColumnDef<UserTableData>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -25,6 +25,10 @@ export const columns: ColumnDef<UserList>[] = [
     enableHiding: false
   },
   {
+    accessorKey: 'fullname',
+    header: 'Fullname'
+  },
+  {
     accessorKey: 'username',
     header: 'Username'
   },
@@ -33,12 +37,12 @@ export const columns: ColumnDef<UserList>[] = [
     header: 'Email'
   },
   {
-    accessorKey: 'phonenumber',
-    header: 'Phonenumber'
+    accessorKey: 'roleName',
+    header: 'Role'
   },
   {
-    accessorKey: 'fullname',
-    header: 'Fullname'
+    accessorKey: 'phoneNumber',
+    header: 'Phonenumber'
   },
   {
     id: 'actions',

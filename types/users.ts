@@ -12,7 +12,7 @@ export type UserType = {
   token: string;
 };
 
-export type UserList = {
+export type UserTableData = {
   id: string;
   username: string;
   email: string;
@@ -32,5 +32,5 @@ export type UserListInfor = {
   hasNextPage: boolean;
   nextPageNumber: number;
   previousPageNumber: number;
-  items: UserList[];
+  items: UserTableData[];
 };

@@ -9,13 +9,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { UserList } from '@/types/users';
+import { UserTableData } from '@/types/users';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 interface CellActionProps {
-  data: UserList;
+  data: UserTableData;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -23,16 +24,19 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
+  const session = useSession();
   const onConfirm = async (userId: string) => {
     setLoading(true);
-    try {
-      await deleteUserById(userId);
-      window.location.reload();
-      router.refresh();
-    } catch (error) {
-    } finally {
-      setLoading(false);
-      setOpen(false);
+    if (session.data !== null) {
+      try {
+        const response = await deleteUserById(userId, session.data.user?.token);
+        return response;
+        // window.location.reload();
+      } catch (error) {
+      } finally {
+        setLoading(false);
+        setOpen(false);
+      }
     }
   };
 
