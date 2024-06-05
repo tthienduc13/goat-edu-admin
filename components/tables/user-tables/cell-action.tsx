@@ -31,7 +31,6 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
       try {
         const response = await deleteUserById(userId, session.data.user?.token);
         return response;
-        // window.location.reload();
       } catch (error) {
       } finally {
         setLoading(false);
@@ -48,6 +47,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         onConfirm={onConfirm}
         loading={loading}
         userId={data.id}
+        userName={data.username}
       />
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>

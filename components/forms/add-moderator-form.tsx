@@ -18,6 +18,8 @@ import { AddModer } from '@/app/(dashboard)/dashboard/moderator/actions/add-mode
 import { useSession } from 'next-auth/react';
 import { useToast } from '../ui/use-toast';
 // import FileUpload from '../file-upload';
+import { useRouter } from 'next/navigation';
+
 export const IMG_MAX_LIMIT = 3;
 
 interface ProductFormProps {
@@ -25,7 +27,9 @@ interface ProductFormProps {
   categories: any;
 }
 
-export const ProductForm: React.FC<ProductFormProps> = () => {
+export const AddModerForm: React.FC<ProductFormProps> = () => {
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof AddModerSchema>>({
     resolver: zodResolver(AddModerSchema),
     mode: 'onChange',
@@ -48,8 +52,9 @@ export const ProductForm: React.FC<ProductFormProps> = () => {
           const response = await AddModer(values, session.data.user?.token);
           if (response.status == 200) {
             toast({
-              description: `${response.message}`
+              description: `${values.username} added successfully !`
             });
+            router.push(`/dashboard/moderator`);
           } else {
             toast({
               description: `${response.message}`,

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
 import { useToast } from '@/components/ui/use-toast';
+import { useRouter } from 'next/navigation';
 
 interface AlertModalProps {
   isOpen: boolean;
@@ -10,6 +11,7 @@ interface AlertModalProps {
   onConfirm: (id: string) => any;
   loading: boolean;
   userId: string;
+  userName: string;
 }
 
 export const AlertModal: React.FC<AlertModalProps> = ({
@@ -17,17 +19,19 @@ export const AlertModal: React.FC<AlertModalProps> = ({
   onClose,
   onConfirm,
   loading,
-  userId
+  userId,
+  userName
 }) => {
   const [isMounted, setIsMounted] = useState(false);
 
   const { toast } = useToast();
+  const router = useRouter();
 
   const handleConfirm = async () => {
     const response = await onConfirm(userId);
     if (response.status == 200) {
       toast({
-        description: `${response.message}`
+        description: `${userName} deleted successfully`
       });
     } else {
       toast({
