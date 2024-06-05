@@ -1,7 +1,7 @@
 import BreadCrumb from '@/components/breadcrumb';
 import { ModerClient } from '@/components/tables/user-tables/moder-client';
 
-const breadcrumbItems = [{ title: 'User', link: '/dashboard/user' }];
+const breadcrumbItems = [{ title: 'Moderators', link: '/dashboard/moderator' }];
 export default function page() {
   return (
     <>
