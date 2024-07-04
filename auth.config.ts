@@ -25,7 +25,7 @@ const authConfig = {
             });
             const user = response.data;
             if (user) {
-              if (user.role.roleName === 'Admin') {
+              if (user.role.roleName === 'Admin' || 'Moderator') {
                 return user;
               }
             } else {

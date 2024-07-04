@@ -1,5 +1,6 @@
 import { Icons } from '@/components/icons';
 import { NavItem, SidebarNavItem } from '@/types';
+import { FaBookBookmark } from 'react-icons/fa6';
 
 export type User = {
   id: number;
@@ -128,6 +129,12 @@ export const navItems: NavItem[] = [
     title: 'Moderator',
     href: '/dashboard/moderator',
     icon: 'employee',
+    label: 'employee'
+  },
+  {
+    title: 'Subject management',
+    href: '/dashboard/subject',
+    icon: 'book',
     label: 'employee'
   }
 ];

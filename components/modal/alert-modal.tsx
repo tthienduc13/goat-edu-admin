@@ -10,8 +10,8 @@ interface AlertModalProps {
   onClose: () => void;
   onConfirm: (id: string) => any;
   loading: boolean;
-  userId: string;
-  userName: string;
+  id: string;
+  name: string;
 }
 
 export const AlertModal: React.FC<AlertModalProps> = ({
@@ -19,8 +19,8 @@ export const AlertModal: React.FC<AlertModalProps> = ({
   onClose,
   onConfirm,
   loading,
-  userId,
-  userName
+  id,
+  name
 }) => {
   const [isMounted, setIsMounted] = useState(false);
 
@@ -28,10 +28,10 @@ export const AlertModal: React.FC<AlertModalProps> = ({
   const router = useRouter();
 
   const handleConfirm = async () => {
-    const response = await onConfirm(userId);
+    const response = await onConfirm(id);
     if (response.status == 200) {
       toast({
-        description: `${userName} deleted successfully`
+        description: `${name} deleted successfully`
       });
     } else {
       toast({

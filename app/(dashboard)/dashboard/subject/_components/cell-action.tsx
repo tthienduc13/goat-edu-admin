@@ -9,14 +9,15 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { UserTableData } from '@/types/users';
+import { Subject } from '@/types/subject';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 interface CellActionProps {
-  data: UserTableData;
+  data: Subject;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -47,7 +48,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         onConfirm={onConfirm}
         loading={loading}
         id={data.id}
-        name={data.username}
+        name={data.subjectName}
       />
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
@@ -59,10 +60,10 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-          <DropdownMenuItem
-            onClick={() => router.push(`/dashboard/user/${data.id}`)}
-          >
-            <Edit className="mr-2 h-4 w-4" /> Update
+          <DropdownMenuItem>
+            <Link href={`/dashboard/subject/${data.id}`}>
+              <Edit className="mr-2 h-4 w-4" /> Update
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash className="mr-2 h-4 w-4" /> Delete
