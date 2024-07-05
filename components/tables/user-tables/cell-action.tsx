@@ -30,6 +30,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     if (session.data !== null) {
       try {
         const response = await deleteUserById(userId, session.data.user?.token);
+
         return response;
       } catch (error) {
       } finally {

@@ -5,7 +5,8 @@ import * as z from 'zod';
 const END_POINT = {
   GET_SUBJECT: '/subject',
   GET_BY_ID: '/subject',
-  PATCH_SUBJECT: '/subject'
+  PATCH_SUBJECT: '/subject',
+  DELETE_SUBJECT: '/subject'
 };
 
 export const getSubject = async (
@@ -54,4 +55,13 @@ export const updateSubjectById = async (
     }
   );
   return response.status;
+};
+
+export const deleteSubject = async (id: string, token: string) => {
+  const response = await axiosClient.delete(`${END_POINT.GET_BY_ID}/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+  return response;
 };
