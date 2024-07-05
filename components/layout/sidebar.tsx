@@ -17,12 +17,7 @@ export default function Sidebar() {
             <h2 className="mb-2 px-4 text-xl font-semibold tracking-tight">
               Overview
             </h2>
-            {session?.user?.role.roleName === 'Admin' ? (
-              <DashboardNav items={navItems} />
-            ) : (
-              <DashboardNav items={moderNavItems} />
-            )}
-            {/* <DashboardNav items={navItems} /> */}
+            <DashboardNav items={navItems} />
           </div>
         </div>
       </div>

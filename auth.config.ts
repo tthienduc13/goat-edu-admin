@@ -45,7 +45,7 @@ const authConfig = {
         token.username = user.username;
         token.fullname = user.fullname;
         token.emailVerify = user.emailVerify;
-        token.role = user.role.roleName;
+        token.role = user.role;
         token.token = user.token;
       }
       return token;
@@ -56,7 +56,7 @@ const authConfig = {
         session.user.username = token.username;
         session.user.name = token.fullname;
         session.user.emailVerify = token.emailVerify;
-        session.user.role.roleName = token.role;
+        session.user.role = token.role;
         session.user.token = token.token;
         session.user.fullname = token.fullname;
       }

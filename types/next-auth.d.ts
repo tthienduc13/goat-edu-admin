@@ -17,10 +17,7 @@ declare module 'next-auth' {
     username: string;
     fullname: string;
     emailVerify: boolean;
-    role: {
-      id: string;
-      roleName: string;
-    };
+    role: string;
     token: string;
   }
 }
