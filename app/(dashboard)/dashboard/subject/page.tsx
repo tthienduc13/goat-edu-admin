@@ -11,6 +11,7 @@ import { Subject } from '@/types/subject';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { columns } from './_components/columns';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const breadcrumbItems = [{ title: 'Subject', link: '/dashboard/subject' }];
 
@@ -49,7 +50,6 @@ const SubjectManagementPage = () => {
           setPagination(
             JSON.parse(response.headers['x-pagination']) as PaginationData
           );
-          console.log(response);
         } catch (error) {
           console.error(error);
         } finally {
@@ -65,10 +65,18 @@ const SubjectManagementPage = () => {
     <ScrollArea className="h-full">
       <div className="flex-1 space-y-4 p-4 pt-6 md:p-8">
         <BreadCrumb items={breadcrumbItems} />
-        <Heading
-          title={`Subject (${pagination?.TotalCount})`}
-          description="Manage Subject (Client side table functionalities.)"
-        />
+        {isLoading ? (
+          <div className="flex h-14 flex-col justify-between">
+            <Skeleton className="h-8 w-[250px]" />
+            <Skeleton className="h-4 w-[250px]" />
+          </div>
+        ) : (
+          <Heading
+            title={`Subject (${pagination?.TotalCount})`}
+            description="Manage Subject (Client side table functionalities.)"
+          />
+        )}
+
         <Separator />
         <DataTable
           isLoading={isLoading}

@@ -1,5 +1,5 @@
 'use client';
-import { deleteUserById } from '@/app/api/user/user.api';
+import { deleteSubject } from '@/app/api/subject/subject.api';
 import { AlertModal } from '@/components/modal/alert-modal';
 import { Button } from '@/components/ui/button';
 import {
@@ -26,11 +26,14 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const router = useRouter();
 
   const session = useSession();
-  const onConfirm = async (userId: string) => {
+  const onConfirm = async (subjectId: string) => {
     setLoading(true);
     if (session.data !== null) {
       try {
-        const response = await deleteUserById(userId, session.data.user?.token);
+        const response = await deleteSubject(
+          subjectId,
+          session.data.user?.token as string
+        );
         return response;
       } catch (error) {
       } finally {

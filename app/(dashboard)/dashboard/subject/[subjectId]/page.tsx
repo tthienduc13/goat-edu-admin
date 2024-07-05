@@ -34,6 +34,8 @@ import { UpdateSubject } from '@/actions/update-subject';
 import { useToast } from '@/components/ui/use-toast';
 import EditIconAnimate from '@/assets/gif/edit.gif';
 import EditIconPause from '@/assets/gif/edit_pause.png';
+import UpdateFormLoading from '../_components/update-form-loading';
+import { useRouter } from 'next/navigation';
 interface SubjectDetailPageProps {
   params: { subjectId: string };
 }
@@ -48,6 +50,7 @@ const SubjectDetailPage = ({ params }: SubjectDetailPageProps) => {
   const session = useSession();
   const { toast } = useToast();
   const [isEdit, setIsEdit] = useState<boolean>(true);
+  const router = useRouter();
 
   const handleEditClick = () => {
     setIsEdit(!isEdit);
@@ -128,6 +131,7 @@ const SubjectDetailPage = ({ params }: SubjectDetailPageProps) => {
           toast({
             description: `Subject updated successfully !`
           });
+          router.push('/dashboard/subject');
         } else {
           toast({
             description: `Failed to update Subject`,
@@ -146,7 +150,7 @@ const SubjectDetailPage = ({ params }: SubjectDetailPageProps) => {
   };
 
   if (isLoading) {
-    return 'is loading';
+    return <UpdateFormLoading />;
   }
   return (
     <div className="w-full space-y-4 p-4">

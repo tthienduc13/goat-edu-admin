@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
 import { useToast } from '@/components/ui/use-toast';
-import { useRouter } from 'next/navigation';
 
 interface AlertModalProps {
   isOpen: boolean;
@@ -25,7 +24,6 @@ export const AlertModal: React.FC<AlertModalProps> = ({
   const [isMounted, setIsMounted] = useState(false);
 
   const { toast } = useToast();
-  const router = useRouter();
 
   const handleConfirm = async () => {
     const response = await onConfirm(id);
