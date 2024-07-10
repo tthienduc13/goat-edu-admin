@@ -1,5 +1,4 @@
 'use client';
-import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
@@ -7,15 +6,9 @@ import { columns } from './columns';
 import { useEffect, useState } from 'react';
 import { UserTableData, UserListInfor } from '@/types/users';
 import { getAuthorizeUser } from '@/app/api/user/user.api';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink
-} from '@/components/ui/pagination';
-import { Input } from '@/components/ui/input';
 import { useSession } from 'next-auth/react';
 import { Skeleton } from '@/components/ui/skeleton';
+import PaginationSection from '../../pagination';
 
 export const UserClient = () => {
   // Array of users
@@ -31,11 +24,13 @@ export const UserClient = () => {
   const session = useSession();
   const handleNextPage = () => {
     setCurrentPageNum(currentPageNum + 1);
+    setIsEdit(false);
   };
 
   const handlePreviousPage = () => {
     if (currentPageNum > 1) {
       setCurrentPageNum(currentPageNum - 1);
+      setIsEdit(false);
     }
   };
 
@@ -63,6 +58,7 @@ export const UserClient = () => {
     if (userListInfor !== null) {
       if (e.code === 'Enter' && inputValue <= userListInfor?.totalPages!) {
         setCurrentPageNum(inputValue);
+        setIsEdit(false);
       }
     }
   };
@@ -85,6 +81,7 @@ export const UserClient = () => {
           // console.log(userList);
         } catch (error) {
         } finally {
+          setIsEdit(false);
           setIsLoading(false);
         }
       }
@@ -117,47 +114,19 @@ export const UserClient = () => {
       />
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="space-x-2">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handlePreviousPage()}
-                  disabled={!userListInfor?.hasPreviousPage}
-                >
-                  Previous
-                </Button>
-              </PaginationItem>
-              <PaginationItem>
-                {isEdit ? (
-                  <div className="flex justify-end">
-                    <Input
-                      value={inputValue}
-                      onKeyDown={(e) => enterInput(e)}
-                      onChange={(e) => addInput(e)}
-                      className="w-[70px]"
-                      type="number"
-                    />
-                  </div>
-                ) : (
-                  <PaginationLink onClick={handlePageClick}>
-                    {currentPageNum}/{userListInfor?.totalPages}
-                  </PaginationLink>
-                )}
-              </PaginationItem>
-              <PaginationItem>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleNextPage()}
-                  disabled={!userListInfor?.hasNextPage}
-                >
-                  Next
-                </Button>
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          <PaginationSection
+            addInput={addInput}
+            currentPageNum={currentPageNum}
+            enterInput={enterInput}
+            handleNextPage={handleNextPage}
+            handlePageClick={handlePageClick}
+            handlePreviousPage={handlePreviousPage}
+            hasNextPage={userListInfor?.hasNextPage}
+            hasPreviousPage={userListInfor?.hasPreviousPage}
+            inputValue={inputValue}
+            isEdit={isEdit}
+            totalPages={userListInfor?.totalPages}
+          />
         </div>
       </div>
     </>
