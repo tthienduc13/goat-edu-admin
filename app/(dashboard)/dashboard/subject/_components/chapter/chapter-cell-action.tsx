@@ -9,7 +9,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { Subject } from '@/types/subject';
+import { Chapter } from '@/types/chapter';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -17,10 +17,10 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 interface CellActionProps {
-  data: Subject;
+  data: Chapter;
 }
 
-export const CellAction: React.FC<CellActionProps> = ({ data }) => {
+export const ChapterCellAction: React.FC<CellActionProps> = ({ data }) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const router = useRouter();
@@ -51,7 +51,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         onConfirm={onConfirm}
         loading={loading}
         id={data.id}
-        name={data.subjectName}
+        name={data.chapterName}
       />
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
@@ -64,7 +64,11 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
           <DropdownMenuItem>
-            <Link className="flex" href={`/dashboard/subject/${data.id}`}>
+            <Link
+              className="flex"
+              href={`/dashboard/subject/${data.subjectId}/chapter/${data.id}`}
+              passHref
+            >
               <Edit className="mr-2 h-4 w-4" /> Update
             </Link>
           </DropdownMenuItem>

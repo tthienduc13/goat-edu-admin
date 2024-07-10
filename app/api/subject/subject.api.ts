@@ -1,5 +1,5 @@
 import axiosClient, { axiosClientUpload } from '@/lib/axiosClient';
-import { EditSubjectSchema } from '@/schemas';
+import { SubjectSchema } from '@/schemas';
 import { Subject } from '@/types/subject';
 import * as z from 'zod';
 const END_POINT = {
@@ -15,9 +15,13 @@ export const getSubject = async (
   pageNum: number
 ) => {
   const response = await axiosClient.get(
-    `${END_POINT.GET_SUBJECT}?page_size=${pageSize}&page_number=${pageNum}`
+    `${END_POINT.GET_SUBJECT}?page_size=${pageSize}&page_number=${pageNum}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
   );
-  // const data = response.headers.get('x-pagination');
   return response;
 };
 
@@ -36,7 +40,7 @@ export const getSubjectById = async (
 export const updateSubjectById = async (
   id: string,
   token: string,
-  values: z.infer<typeof EditSubjectSchema>
+  values: z.infer<typeof SubjectSchema>
 ) => {
   const response = await axiosClientUpload.patch(
     `${END_POINT.PATCH_SUBJECT}/${id}`,
@@ -64,4 +68,44 @@ export const deleteSubject = async (id: string, token: string) => {
     }
   });
   return response;
+};
+
+export const getSubjectByClass = async (
+  token: string,
+  className: string,
+  pageSize: number,
+  pageNum: number
+) => {
+  const response = await axiosClient.get(
+    `${END_POINT.GET_SUBJECT}/class?page_size=${pageSize}&page_number=${pageNum}&classes=${className}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  );
+  return response;
+};
+
+export const createSubject = async (
+  token: string,
+  values: z.infer<typeof SubjectSchema>
+) => {
+  const response = await axiosClientUpload.post(
+    `${END_POINT.PATCH_SUBJECT}`,
+    {
+      SubjectName: values.subjectName,
+      image: values.subjectImage,
+      SubjectCode: values.subjectCode,
+      Information: values.subjectInformation,
+      Class: values.subjectClass
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data'
+      }
+    }
+  );
+  return response.status;
 };

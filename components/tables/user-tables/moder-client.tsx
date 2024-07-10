@@ -34,11 +34,13 @@ export const ModerClient = () => {
   const session = useSession();
   const handleNextPage = () => {
     setCurrentPageNum(currentPageNum + 1);
+    setIsEdit(false);
   };
 
   const handlePreviousPage = () => {
     if (currentPageNum > 1) {
       setCurrentPageNum(currentPageNum - 1);
+      setIsEdit(false);
     }
   };
   const handlePageClick = () => {
@@ -65,6 +67,7 @@ export const ModerClient = () => {
     if (userListInfor !== null) {
       if (e.code === 'Enter' && inputValue <= userListInfor?.totalPages!) {
         setCurrentPageNum(inputValue);
+        setIsEdit(false);
       }
     }
   };

@@ -1,11 +1,10 @@
 'use client';
 import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Chapter } from '@/types/chapter';
+import { ChapterCellAction } from './chapter-cell-action';
 
-import { Subject } from '@/types/subject';
-import { CellAction } from './cell-action';
-
-export const columns: ColumnDef<Subject>[] = [
+export const chapterColumns: ColumnDef<Chapter>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -26,27 +25,16 @@ export const columns: ColumnDef<Subject>[] = [
     enableHiding: false
   },
   {
-    accessorKey: 'subjectName',
-    header: 'Name'
-  },
-  {
-    accessorKey: 'subjectCode',
-    header: 'Code'
-  },
-  {
-    accessorKey: 'class',
-    header: 'Class'
-  },
-  {
-    accessorKey: 'numberOfChapters',
-    header: 'Chapters'
-  },
-  {
-    accessorKey: 'numberOfEnrollment',
-    header: 'Enrollments'
+    id: 'chapterName',
+    header: 'Name',
+    cell: ({ row }) => (
+      <span>
+        Chap {row.original.chapterLevel} : {row.original.chapterName}
+      </span>
+    )
   },
   {
     id: 'actions',
-    cell: ({ row }) => <CellAction data={row.original} />
+    cell: ({ row }) => <ChapterCellAction data={row.original} />
   }
 ];

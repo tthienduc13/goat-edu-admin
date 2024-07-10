@@ -1,10 +1,9 @@
-import { updateSubjectById } from '@/app/api/subject/subject.api';
+import { createSubject } from '@/app/api/subject/subject.api';
 import { SubjectSchema } from '@/schemas';
 import * as z from 'zod';
-export const UpdateSubjectAction = async (
-  values: z.infer<typeof SubjectSchema>,
-  id: string,
-  token: string
+export const CreateSubjectAction = async (
+  token: string,
+  values: z.infer<typeof SubjectSchema>
 ) => {
   const validatedFields = SubjectSchema.safeParse(values);
 
@@ -28,7 +27,7 @@ export const UpdateSubjectAction = async (
     subjectClass
   };
 
-  const response = await updateSubjectById(id, token, newSubjectData);
+  const response = await createSubject(token, newSubjectData);
 
   return response;
 };

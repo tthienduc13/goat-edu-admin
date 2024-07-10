@@ -1,7 +1,7 @@
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 
-const UpdateFormLoading = () => {
+const SubjectFormLoading = () => {
   return (
     <div className="w-full space-y-4 p-4">
       <div className="flex h-14 flex-col justify-between">
@@ -36,4 +36,4 @@ const UpdateFormLoading = () => {
     </div>
   );
 };
-export default UpdateFormLoading;
+export default SubjectFormLoading;
