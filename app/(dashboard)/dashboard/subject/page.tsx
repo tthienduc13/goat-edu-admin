@@ -14,17 +14,10 @@ import { columns } from './_components/columns';
 import { Skeleton } from '@/components/ui/skeleton';
 import PaginationSection from '@/components/pagination';
 
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
+import ClassFitler from './_components/class-filter';
 
 const breadcrumbItems = [{ title: 'Subject', link: '/dashboard/subject' }];
 
@@ -136,30 +129,20 @@ const SubjectManagementPage = () => {
               description="Manage Subject (Client side table functionalities.)"
             />
           )}
-          <div className="flex items-center space-x-2">
+          {!isLoading && (
             <div className="flex items-center space-x-2">
-              <span>Sort:</span>
-              <Select onValueChange={handleClassChange}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Classes" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="All">All</SelectItem>
-                    <SelectItem value="Class 10">Class 10</SelectItem>
-                    <SelectItem value="Class 11">Class 11</SelectItem>
-                    <SelectItem value="Class 12">Class 12</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
+              <div className="flex items-center space-x-2">
+                <span>Sort:</span>
+                <ClassFitler handleClassChange={handleClassChange} />
+              </div>
 
-            <Link href={`/dashboard/subject/create`}>
-              <Button size={'icon'} className="rounded-full">
-                <Plus />
-              </Button>
-            </Link>
-          </div>
+              <Link href={`/dashboard/subject/create`}>
+                <Button size={'icon'} className="rounded-full">
+                  <Plus />
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
 
         <Separator />
@@ -169,19 +152,25 @@ const SubjectManagementPage = () => {
           columns={columns}
           data={subjectData}
         />
-        <PaginationSection
-          addInput={addInput}
-          currentPageNum={currentPageNum}
-          enterInput={enterInput}
-          handleNextPage={handleNextPage}
-          handlePageClick={handlePageClick}
-          handlePreviousPage={handlePreviousPage}
-          hasNextPage={pagination?.HasNextPage}
-          hasPreviousPage={pagination?.HasPreviousPage}
-          inputValue={inputValue}
-          isEdit={isEdit}
-          totalPages={pagination?.TotalPages}
-        />
+        {subjectData && (
+          <div className="flex w-full justify-end">
+            <div>
+              <PaginationSection
+                addInput={addInput}
+                currentPageNum={currentPageNum}
+                enterInput={enterInput}
+                handleNextPage={handleNextPage}
+                handlePageClick={handlePageClick}
+                handlePreviousPage={handlePreviousPage}
+                hasNextPage={pagination?.HasNextPage}
+                hasPreviousPage={pagination?.HasPreviousPage}
+                inputValue={inputValue}
+                isEdit={isEdit}
+                totalPages={pagination?.TotalPages}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </ScrollArea>
   );

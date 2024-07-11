@@ -114,19 +114,21 @@ export const UserClient = () => {
       />
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="space-x-2">
-          <PaginationSection
-            addInput={addInput}
-            currentPageNum={currentPageNum}
-            enterInput={enterInput}
-            handleNextPage={handleNextPage}
-            handlePageClick={handlePageClick}
-            handlePreviousPage={handlePreviousPage}
-            hasNextPage={userListInfor?.hasNextPage}
-            hasPreviousPage={userListInfor?.hasPreviousPage}
-            inputValue={inputValue}
-            isEdit={isEdit}
-            totalPages={userListInfor?.totalPages}
-          />
+          {userList && (
+            <PaginationSection
+              addInput={addInput}
+              currentPageNum={currentPageNum}
+              enterInput={enterInput}
+              handleNextPage={handleNextPage}
+              handlePageClick={handlePageClick}
+              handlePreviousPage={handlePreviousPage}
+              hasNextPage={userListInfor?.hasNextPage}
+              hasPreviousPage={userListInfor?.hasPreviousPage}
+              inputValue={inputValue}
+              isEdit={isEdit}
+              totalPages={userListInfor?.totalPages}
+            />
+          )}
         </div>
       </div>
     </>

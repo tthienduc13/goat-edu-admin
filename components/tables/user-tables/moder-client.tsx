@@ -18,6 +18,7 @@ import { useSession } from 'next-auth/react';
 import { getModer } from '@/app/api/user/user.api';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
+import PaginationSection from '@/components/pagination';
 
 export const ModerClient = () => {
   const router = useRouter();
@@ -128,47 +129,21 @@ export const ModerClient = () => {
       />
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="space-x-2">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handlePreviousPage()}
-                  disabled={!userListInfor?.hasPreviousPage}
-                >
-                  Previous
-                </Button>
-              </PaginationItem>
-              <PaginationItem>
-                {isEdit ? (
-                  <div className="flex justify-end">
-                    <Input
-                      value={inputValue}
-                      onKeyDown={(e) => enterInput(e)}
-                      onChange={(e) => addInput(e)}
-                      className="w-[70px]"
-                      type="number"
-                    />
-                  </div>
-                ) : (
-                  <PaginationLink onClick={handlePageClick}>
-                    {currentPageNum}/{userListInfor?.totalPages}
-                  </PaginationLink>
-                )}
-              </PaginationItem>
-              <PaginationItem>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleNextPage()}
-                  disabled={!userListInfor?.hasNextPage}
-                >
-                  Next
-                </Button>
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          {userList && (
+            <PaginationSection
+              addInput={addInput}
+              currentPageNum={currentPageNum}
+              enterInput={enterInput}
+              handleNextPage={handleNextPage}
+              handlePageClick={handlePageClick}
+              handlePreviousPage={handlePreviousPage}
+              hasNextPage={userListInfor?.hasNextPage}
+              hasPreviousPage={userListInfor?.hasPreviousPage}
+              inputValue={inputValue}
+              isEdit={isEdit}
+              totalPages={userListInfor?.totalPages}
+            />
+          )}
         </div>
       </div>
     </>

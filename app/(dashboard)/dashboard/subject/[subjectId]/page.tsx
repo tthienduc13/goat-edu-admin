@@ -51,14 +51,15 @@ import SubjectFormLoading from '../_components/update-form-loading';
 
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { CornerDownLeft } from 'lucide-react';
-import { Chapter } from '@/types/chapter';
 import ChapterList from '../_components/chapter/chapter-list';
+import { Chapter } from '@/types/chapter';
 interface SubjectDetailPageProps {
   params: { subjectId: string };
 }
 
 const SubjectDetailPage = ({ params }: SubjectDetailPageProps) => {
   const [subject, setSubject] = useState<Subject>();
+  const [chapterList, setChapterList] = useState<Chapter[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isPending, setIsPending] = useState<boolean>(false);
   const [imageState, setImageState] = useState<File | null>(null);
@@ -97,6 +98,7 @@ const SubjectDetailPage = ({ params }: SubjectDetailPageProps) => {
           session.data?.user?.token as string
         );
         setSubject(response);
+        setChapterList(response.chapters);
         form.reset({
           subjectName: response.subjectName,
           subjectCode: response.subjectCode,
@@ -362,7 +364,7 @@ const SubjectDetailPage = ({ params }: SubjectDetailPageProps) => {
       <Separator />
       <ChapterList
         subjectId={subject?.id}
-        data={subject?.chapters}
+        data={chapterList}
         numOfChapters={subject?.numberOfChapters}
         isLoading={isLoading}
       />
