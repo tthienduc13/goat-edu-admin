@@ -1,5 +1,5 @@
 'use client';
-import { deleteChapter } from '@/app/api/chapter/chapter.api';
+import { deleteLesson } from '@/app/api/lesson/lesson.api';
 import { AlertModal } from '@/components/modal/alert-modal';
 import { Button } from '@/components/ui/button';
 import {
@@ -9,29 +9,27 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { Chapter } from '@/types/chapter';
+import { Lesson } from '@/types/lesson';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 interface CellActionProps {
-  data: Chapter;
+  data: Lesson;
 }
 
-export const ChapterCellAction: React.FC<CellActionProps> = ({ data }) => {
+export const LessonCellAction: React.FC<CellActionProps> = ({ data }) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const router = useRouter();
 
   const session = useSession();
-  const onConfirm = async (chapterId: string) => {
+  const onConfirm = async (lessonId: string) => {
     setLoading(true);
     if (session.data !== null) {
       try {
-        const response = await deleteChapter(
-          chapterId,
+        const response = await deleteLesson(
+          lessonId,
           session.data.user?.token as string
         );
         return response;
@@ -51,7 +49,7 @@ export const ChapterCellAction: React.FC<CellActionProps> = ({ data }) => {
         onConfirm={onConfirm}
         loading={loading}
         id={data.id}
-        name={data.chapterName}
+        name={data.lessonName}
       />
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
@@ -64,11 +62,7 @@ export const ChapterCellAction: React.FC<CellActionProps> = ({ data }) => {
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
           <DropdownMenuItem>
-            <Link
-              className="flex"
-              href={`/dashboard/subject/${data.subjectId}/chapter/${data.id}`}
-              passHref
-            >
+            <Link className="flex" href={``} passHref>
               <Edit className="mr-2 h-4 w-4" /> Update
             </Link>
           </DropdownMenuItem>
