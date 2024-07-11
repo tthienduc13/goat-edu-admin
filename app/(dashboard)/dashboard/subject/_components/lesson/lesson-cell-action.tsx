@@ -17,9 +17,13 @@ import { useState } from 'react';
 
 interface CellActionProps {
   data: Lesson;
+  subjectId: string;
 }
 
-export const LessonCellAction: React.FC<CellActionProps> = ({ data }) => {
+export const LessonCellAction: React.FC<CellActionProps> = ({
+  data,
+  subjectId
+}) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -62,7 +66,11 @@ export const LessonCellAction: React.FC<CellActionProps> = ({ data }) => {
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
           <DropdownMenuItem>
-            <Link className="flex" href={``} passHref>
+            <Link
+              className="flex"
+              href={`/dashboard/subject/${subjectId}/chapter/${data.chapterId}/lesson/${data.id}`}
+              passHref
+            >
               <Edit className="mr-2 h-4 w-4" /> Update
             </Link>
           </DropdownMenuItem>

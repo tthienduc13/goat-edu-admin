@@ -29,7 +29,7 @@ import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
 import { useSession } from 'next-auth/react';
 
-import { CreateChapterAction } from '@/actions/create-chapter';
+import { CreateChapterAction } from '@/actions/chapter/create-chapter';
 
 import { CornerDownLeft } from 'lucide-react';
 

@@ -2,7 +2,7 @@ import Image from 'next/image';
 import rocket from '@/assets/gif/rocket.png';
 const Empty = () => {
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-center space-y-4">
+    <div className="flex h-[600px] w-full flex-col items-center justify-center space-y-4">
       <Image src={rocket} alt="empty" height={200} width={200} color=""></Image>
 
       <h3 className="font-medium">

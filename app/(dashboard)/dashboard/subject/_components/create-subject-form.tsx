@@ -36,7 +36,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { getImageData } from '@/actions/get-image-data';
 
-import { CreateSubjectAction } from '@/actions/create-subject';
+import { CreateSubjectAction } from '@/actions/subject/create-subject';
 
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { CornerDownLeft } from 'lucide-react';
@@ -126,7 +126,7 @@ const SubjectCreateForm = () => {
         <CornerDownLeft /> <span>Go back</span>
       </Button>
       <Heading
-        title="Create subject form"
+        title="Create subject form."
         description="Manage Subject (Client side table functionalities.)"
       />
       <Separator />

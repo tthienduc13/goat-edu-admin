@@ -14,12 +14,12 @@ export const CreateChapterAction = async (
 
   const { chapterName, chapterLevel } = validatedFields.data;
 
-  const newSubjectData = {
+  const newChapterData = {
     chapterName,
     chapterLevel
   };
 
-  const response = await createChapter(token, subjectId, newSubjectData);
+  const response = await createChapter(token, subjectId, newChapterData);
 
   return response;
 };

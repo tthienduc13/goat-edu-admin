@@ -29,7 +29,7 @@ import { Chapter } from '@/types/chapter';
 import { Lesson } from '@/types/lesson';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { Input } from '@/components/ui/input';
-import { UpdateChapterAction } from '@/actions/update-chapter';
+import { UpdateChapterAction } from '@/actions/chapter/update-chapter';
 import { getLessonByChapter } from '@/app/api/lesson/lesson.api';
 import { PaginationData } from '@/types/pagination';
 import ChapterFormLoading from '../../../_components/chapter/chapter-form-loading';
@@ -47,7 +47,7 @@ const ChapterDetailPage = ({ params }: ChapterDetailPageProps) => {
   const [chapterData, setChapterData] = useState<Chapter>();
   const [lessonList, setLessonList] = useState<Lesson[]>([]);
   const [lessonPagination, setLessonPagination] = useState<PaginationData>();
-  const [isEdit, setIsEdit] = useState<boolean>(true);
+  const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isPending, setIsPending] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { toast } = useToast();
@@ -173,7 +173,7 @@ const ChapterDetailPage = ({ params }: ChapterDetailPageProps) => {
                         <div className="flex h-12 w-full flex-row items-center overflow-hidden rounded-xl bg-[#a8b3cf14] px-4">
                           <div className="flex w-full flex-col">
                             <Input
-                              disabled={isPending || isEdit}
+                              disabled={isPending || !isEdit}
                               type="text"
                               placeholder="Enter chapter name"
                               className="border-none text-base text-muted-foreground shadow-none outline-none focus-visible:ring-0"
@@ -196,7 +196,7 @@ const ChapterDetailPage = ({ params }: ChapterDetailPageProps) => {
                         <Input
                           className="h-[48px]"
                           type="number"
-                          disabled={isPending || isEdit}
+                          disabled={isPending || !isEdit}
                           {...field}
                         />
                       </FormControl>
@@ -206,7 +206,7 @@ const ChapterDetailPage = ({ params }: ChapterDetailPageProps) => {
                 />
               </div>
               <div className="mt-4 flex w-full justify-end">
-                {!isEdit &&
+                {isEdit &&
                   (isPending ? (
                     <>
                       <Button disabled={isPending}>
