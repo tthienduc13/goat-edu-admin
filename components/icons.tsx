@@ -1,3 +1,4 @@
+import { SpeakerModerateIcon } from '@radix-ui/react-icons';
 import {
   AlertTriangle,
   ArrowRight,
@@ -29,13 +30,15 @@ import {
   User2Icon,
   UserX2Icon,
   X,
-  Album
+  Album,
+  Speech
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
 
 export const Icons = {
   dashboard: LayoutDashboardIcon,
+  discussion: Speech,
   logo: Command,
   login: LogIn,
   close: X,

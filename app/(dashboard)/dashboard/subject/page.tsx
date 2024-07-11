@@ -59,7 +59,7 @@ const SubjectManagementPage = () => {
             );
           }
         } catch (error) {
-          console.error(error);
+          console.log(error);
         } finally {
           setIsLoading(false);
         }

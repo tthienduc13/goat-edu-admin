@@ -48,13 +48,10 @@ export function DataTable<TData, TValue>({
     return rendered;
   };
 
-  /* this can be used to get the selectedrows 
-  console.log("value", table.getFilteredSelectedRowModel()); */
-
   return (
     <>
       {isLoading ? (
-        <Skeleton className="h-[500px] w-[1227px] rounded-xl" />
+        <Skeleton className="h-[500px] w-full rounded-xl" />
       ) : (
         <div className="space-y-4">
           <Input
@@ -120,31 +117,6 @@ export function DataTable<TData, TValue>({
           </ScrollArea>
         </div>
       )}
-
-      {/* <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{' '}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div>
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handlePreviousPage()}
-            disabled={!handlePreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handleNextPage()}
-            disabled={!handleNextPage()}
-          >
-            Next
-          </Button>
-        </div>
-      </div> */}
     </>
   );
 }

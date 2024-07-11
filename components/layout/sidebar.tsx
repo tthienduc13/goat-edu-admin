@@ -1,12 +1,15 @@
 'use client';
 import { DashboardNav } from '@/components/dashboard-nav';
 import { moderNavItems, navItems } from '@/constants/data';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { cn } from '@/lib/utils';
 import { useSession } from 'next-auth/react';
 
 export default function Sidebar() {
-  const { data: session, status } = useSession();
-
+  const user = useCurrentUser();
+  if (!user) {
+    return;
+  }
   return (
     <nav
       className={cn(`relative hidden h-screen w-72 border-r pt-16 lg:block`)}
@@ -17,7 +20,9 @@ export default function Sidebar() {
             <h2 className="mb-2 px-4 text-xl font-semibold tracking-tight">
               Overview
             </h2>
-            <DashboardNav items={navItems} />
+            <DashboardNav
+              items={user.role.roleName === 'Admin' ? navItems : moderNavItems}
+            />
           </div>
         </div>
       </div>

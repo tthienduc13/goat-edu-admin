@@ -143,5 +143,17 @@ export const moderNavItems: NavItem[] = [
     href: '/dashboard',
     icon: 'dashboard',
     label: 'Dashboard'
+  },
+  {
+    title: 'Subject management',
+    href: '/dashboard/subject',
+    icon: 'book',
+    label: 'employee'
+  },
+  {
+    title: 'Discussions',
+    href: '/dashboard/discussion',
+    icon: 'discussion',
+    label: 'employee'
   }
 ];
