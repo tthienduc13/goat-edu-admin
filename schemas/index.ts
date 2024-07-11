@@ -39,3 +39,16 @@ export const ChapterSchema = z.object({
       message: 'Chapter level cannot be 0'
     })
 });
+
+export const LessonSchema = z.object({
+  lessonName: z.string().min(10, 'Lesson name needs a minium length of 10'),
+  lessonBody: z
+    .string()
+    .min(20, 'Lesson description needs a minium length of 20'),
+  displayOrder: z.coerce
+    .number()
+    .positive('Display order level can not be 0 or negative')
+    .refine((value) => value !== 0, {
+      message: 'Display order level cannot be 0'
+    })
+});

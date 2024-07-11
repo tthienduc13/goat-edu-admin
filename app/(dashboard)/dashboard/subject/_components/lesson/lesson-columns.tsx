@@ -4,7 +4,13 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Lesson } from '@/types/lesson';
 import { LessonCellAction } from './lesson-cell-action';
 
-export const lessonColumns: ColumnDef<Lesson>[] = [
+interface lessonColumnsProps {
+  subjectId: string;
+}
+
+export const lessonColumns = ({
+  subjectId
+}: lessonColumnsProps): ColumnDef<Lesson>[] => [
   {
     id: 'select',
     header: ({ table }) => (
@@ -34,6 +40,8 @@ export const lessonColumns: ColumnDef<Lesson>[] = [
   },
   {
     id: 'actions',
-    cell: ({ row }) => <LessonCellAction data={row.original} />
+    cell: ({ row }) => (
+      <LessonCellAction subjectId={subjectId} data={row.original} />
+    )
   }
 ];

@@ -42,7 +42,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 
 import { getImageData } from '@/actions/get-image-data';
-import { UpdateSubjectAction } from '@/actions/update-subject';
+import { UpdateSubjectAction } from '@/actions/subject/update-subject';
 
 import EditIconAnimate from '@/assets/gif/edit.gif';
 import EditIconPause from '@/assets/gif/edit_pause.png';
@@ -53,6 +53,7 @@ import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { CornerDownLeft } from 'lucide-react';
 import ChapterList from '../_components/chapter/chapter-list';
 import { Chapter } from '@/types/chapter';
+import { Textarea } from '@/components/ui/textarea';
 interface SubjectDetailPageProps {
   params: { subjectId: string };
 }
@@ -67,7 +68,7 @@ const SubjectDetailPage = ({ params }: SubjectDetailPageProps) => {
   const fileInputRef = useRef(null);
   const session = useSession();
   const { toast } = useToast();
-  const [isEdit, setIsEdit] = useState<boolean>(true);
+  const [isEdit, setIsEdit] = useState<boolean>(false);
   const router = useRouter();
   const handleGoBack = () => {
     router.back();
@@ -153,7 +154,6 @@ const SubjectDetailPage = ({ params }: SubjectDetailPageProps) => {
           toast({
             description: `Subject updated successfully !`
           });
-          router.push('/dashboard/subject');
         } else {
           toast({
             description: `Failed to update Subject`,
@@ -167,6 +167,7 @@ const SubjectDetailPage = ({ params }: SubjectDetailPageProps) => {
         });
       } finally {
         setIsPending(false);
+        setIsEdit(false);
       }
     }
   };
@@ -190,7 +191,7 @@ const SubjectDetailPage = ({ params }: SubjectDetailPageProps) => {
           onClick={handleEditClick}
         >
           <Image
-            src={isEdit ? EditIconAnimate : EditIconPause}
+            src={!isEdit ? EditIconAnimate : EditIconPause}
             alt="Edit"
             width={18}
             height={18}
@@ -255,15 +256,21 @@ const SubjectDetailPage = ({ params }: SubjectDetailPageProps) => {
                   <FormItem className="w-full">
                     <FormLabel>Subject information</FormLabel>
                     <FormControl>
-                      <div className="flex h-24 w-full flex-row items-start overflow-hidden rounded-xl bg-[#a8b3cf14] px-4">
+                      <div className="flex w-full flex-row items-start overflow-hidden rounded-xl bg-[#a8b3cf14] px-4">
                         <div className="flex w-full flex-col">
-                          <Input
+                          <Textarea
+                            disabled={isPending || isEdit}
+                            placeholder="Enter lesson description"
+                            className="h-24 resize-none border-0 bg-[#a8b3cf14] text-base text-muted-foreground"
+                            {...field}
+                          />
+                          {/* <Input
                             type="text"
                             disabled={isEdit || isPending}
                             placeholder="Enter subject information"
                             className="border-none text-base text-muted-foreground shadow-none outline-none focus-visible:ring-0"
                             {...field}
-                          />
+                          /> */}
                         </div>
                       </div>
                     </FormControl>

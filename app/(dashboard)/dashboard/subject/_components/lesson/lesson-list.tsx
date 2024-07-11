@@ -5,6 +5,7 @@ import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import { lessonColumns } from './lesson-columns';
 import { Lesson } from '@/types/lesson';
+import Empty from '../empty-state';
 
 interface LessonListProps {
   isLoading: boolean;
@@ -21,12 +22,13 @@ const LessonList = ({
   subjectId,
   chapterId
 }: LessonListProps) => {
+  const columns = lessonColumns({ subjectId });
   return (
     <div className="w-full space-y-4">
       {!isLoading && (
         <div className="flex w-full items-center justify-between">
           <Heading
-            title={`Lessons of this chapter (${TotalCount})`}
+            title={`Lessons of this chapter (${TotalCount ? TotalCount : 0})`}
             description="Manage Subject (Client side table functionalities.)"
           />
           <Link
@@ -39,12 +41,18 @@ const LessonList = ({
         </div>
       )}
 
-      <DataTable
-        columns={lessonColumns}
-        data={lessonList}
-        isLoading={isLoading}
-        searchKey="lessonName"
-      />
+      {isLoading ? (
+        <></>
+      ) : lessonList.length !== 0 ? (
+        <DataTable
+          columns={columns}
+          data={lessonList}
+          isLoading={isLoading}
+          searchKey="lessonName"
+        />
+      ) : (
+        <Empty />
+      )}
     </div>
   );
 };
