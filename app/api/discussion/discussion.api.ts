@@ -10,6 +10,7 @@ export const END_POINT = {
 export const getAllDiscussion = async ({
   token,
   sort,
+  sortDirection,
   search,
   status,
   pageNumber,
@@ -17,6 +18,7 @@ export const getAllDiscussion = async ({
 }: {
   token: string;
   sort?: string;
+  sortDirection?: string;
   search?: string;
   status?: Status;
   pageNumber?: number;
@@ -26,6 +28,9 @@ export const getAllDiscussion = async ({
     const queryParams = new URLSearchParams();
     if (sort) {
       queryParams.append('sort', sort);
+    }
+    if (sortDirection) {
+      queryParams.append('sort_direction', sortDirection);
     }
     if (search) {
       queryParams.append('search', search);
@@ -39,8 +44,6 @@ export const getAllDiscussion = async ({
     if (pageNumber) {
       queryParams.append('page_number', pageNumber.toString());
     }
-
-    console.log(queryParams);
 
     const response = await axiosClient.get(
       `${END_POINT.GET_ALL}?${queryParams.toString()}`,

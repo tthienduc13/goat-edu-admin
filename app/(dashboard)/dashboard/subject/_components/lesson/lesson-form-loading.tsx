@@ -2,7 +2,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 const LessonFormLoading = () => {
   return (
-    <div className="flex flex-col space-y-4">
+    <div className="mt-9 flex flex-col space-y-4">
       <div className="flex h-[52px] flex-col">
         <Skeleton className="h-8 w-[250px]" />
         <Skeleton className="mt-2 h-4 w-[250px]" />

@@ -3,7 +3,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 const SubjectFormLoading = () => {
   return (
-    <div className="w-full space-y-4 p-4">
+    <div className="mt-9 w-full space-y-4 p-4">
       <div className="flex h-14 flex-col justify-between">
         <Skeleton className="h-8 w-[250px]" />
         <Skeleton className="h-4 w-[250px]" />

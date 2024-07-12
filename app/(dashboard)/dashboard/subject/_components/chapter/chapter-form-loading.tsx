@@ -8,7 +8,7 @@ const ChapterFormLoading = () => {
         <Skeleton className="mt-2 h-4 w-[250px]" />
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-4">
+      <div className="mt-4 grid h-[132px] grid-cols-2 gap-4">
         <div>
           <Skeleton className="h-[20px] w-[95px]" />
           <Skeleton className="mt-2 h-[48px] w-[606.67px]" />

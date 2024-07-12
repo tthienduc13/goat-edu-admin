@@ -13,11 +13,16 @@ import PaginationSection from '@/components/pagination';
 import { Skeleton } from '@/components/ui/skeleton';
 import StatusFitler from './_components/status-filter';
 import { Button } from '@/components/ui/button';
-import { ListRestart } from 'lucide-react';
+import {
+  ArrowDownWideNarrow,
+  ArrowUpWideNarrow,
+  ListRestart
+} from 'lucide-react';
 
 const DiscussionManagementPage = () => {
   const [inputValue, setInputValue] = useState<number>(1);
   const [currentPageNum, setCurrentPageNum] = useState<number>(1);
+  const [sortDirection, setSortDirection] = useState<string>('desc');
 
   const [discussionData, setDiscussionData] = useState<Discussion[]>([]);
   const [pagination, setPagination] = useState<PaginationData>();
@@ -36,7 +41,9 @@ const DiscussionManagementPage = () => {
           token: session.data?.user?.token as string,
           pageNumber: currentPageNum,
           pageSize: 10,
-          status: discussionStatus ? discussionStatus : undefined
+          status: discussionStatus ? discussionStatus : undefined,
+          sort: 'createdAt',
+          sortDirection: sortDirection ? sortDirection : undefined
         });
         setDiscussionData(discussionResponse.data);
         setPagination(
@@ -51,7 +58,7 @@ const DiscussionManagementPage = () => {
       }
     };
     fetchDiscussion();
-  }, [discussionStatus, currentPageNum]);
+  }, [discussionStatus, currentPageNum, sortDirection]);
   const handleNextPage = () => {
     setCurrentPageNum(currentPageNum + 1);
     setIsEdit(false);
@@ -102,6 +109,10 @@ const DiscussionManagementPage = () => {
     setDiscussionStatus(undefined);
   };
 
+  const handleSortDirectionChange = (value: string) => {
+    setSortDirection(value);
+  };
+
   return (
     <div className="w-full space-y-4 p-8">
       <div className="flex w-full justify-between">
@@ -117,19 +128,33 @@ const DiscussionManagementPage = () => {
           />
         )}
         {!isLoading && (
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
-              <span>Sort:</span>
+              <span>Filter: </span>
               <StatusFitler handleStatusChange={handleStatusChange} />
             </div>
-            <Button
-              size={'icon'}
-              className="rounded-full"
-              onClick={handleResest}
-            >
+            <Button size={'icon'} onClick={handleResest}>
               {' '}
               <ListRestart />
             </Button>
+            <div className="flex items-center space-x-2">
+              <span>Sort: </span>
+              {sortDirection === 'asc' ? (
+                <Button
+                  size={'icon'}
+                  onClick={() => handleSortDirectionChange('desc')}
+                >
+                  <ArrowUpWideNarrow />
+                </Button>
+              ) : (
+                <Button
+                  size={'icon'}
+                  onClick={() => handleSortDirectionChange('asc')}
+                >
+                  <ArrowDownWideNarrow />
+                </Button>
+              )}
+            </div>
           </div>
         )}
       </div>
