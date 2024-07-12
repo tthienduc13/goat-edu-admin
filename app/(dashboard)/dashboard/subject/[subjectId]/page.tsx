@@ -191,7 +191,7 @@ const SubjectDetailPage = ({ params }: SubjectDetailPageProps) => {
           onClick={handleEditClick}
         >
           <Image
-            src={!isEdit ? EditIconAnimate : EditIconPause}
+            src={isEdit ? EditIconAnimate : EditIconPause}
             alt="Edit"
             width={18}
             height={18}
@@ -213,7 +213,7 @@ const SubjectDetailPage = ({ params }: SubjectDetailPageProps) => {
                       <div className="flex h-12 w-full flex-row items-center overflow-hidden rounded-xl bg-[#a8b3cf14] px-4">
                         <div className="flex w-full flex-col">
                           <Input
-                            disabled={isEdit || isPending}
+                            disabled={!isEdit || isPending}
                             type="text"
                             placeholder="Enter subject name"
                             className="border-none text-base text-muted-foreground shadow-none outline-none focus-visible:ring-0"
@@ -237,7 +237,7 @@ const SubjectDetailPage = ({ params }: SubjectDetailPageProps) => {
                         <div className="flex w-full flex-col">
                           <Input
                             type="text"
-                            disabled={isEdit || isPending}
+                            disabled={!isEdit || isPending}
                             placeholder="Enter subject code"
                             className="border-none text-base text-muted-foreground shadow-none outline-none focus-visible:ring-0"
                             {...field}
@@ -259,18 +259,11 @@ const SubjectDetailPage = ({ params }: SubjectDetailPageProps) => {
                       <div className="flex w-full flex-row items-start overflow-hidden rounded-xl bg-[#a8b3cf14] px-4">
                         <div className="flex w-full flex-col">
                           <Textarea
-                            disabled={isPending || isEdit}
+                            disabled={!isPending || isEdit}
                             placeholder="Enter lesson description"
                             className="h-24 resize-none border-0 bg-[#a8b3cf14] text-base text-muted-foreground"
                             {...field}
                           />
-                          {/* <Input
-                            type="text"
-                            disabled={isEdit || isPending}
-                            placeholder="Enter subject information"
-                            className="border-none text-base text-muted-foreground shadow-none outline-none focus-visible:ring-0"
-                            {...field}
-                          /> */}
                         </div>
                       </div>
                     </FormControl>
@@ -287,7 +280,7 @@ const SubjectDetailPage = ({ params }: SubjectDetailPageProps) => {
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={subject?.class}
-                      disabled={isEdit || isPending}
+                      disabled={!isEdit || isPending}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -317,7 +310,7 @@ const SubjectDetailPage = ({ params }: SubjectDetailPageProps) => {
                         <Button
                           type="button"
                           size="sm"
-                          disabled={isEdit || isPending}
+                          disabled={!isEdit || isPending}
                           onClick={() => handleBrowseImage()}
                         >
                           Choose Image
@@ -330,7 +323,7 @@ const SubjectDetailPage = ({ params }: SubjectDetailPageProps) => {
                         name="file"
                         id="imageImporter"
                         className="hidden"
-                        disabled={isEdit || isPending}
+                        disabled={!isEdit || isPending}
                         multiple
                         ref={fileInputRef}
                         onChange={(event) => handleOnChangeSeleteImage(event)}
@@ -350,7 +343,7 @@ const SubjectDetailPage = ({ params }: SubjectDetailPageProps) => {
                 ></Image>
               </div>
               <div className="flex w-full justify-end">
-                {!isEdit &&
+                {isEdit &&
                   (isPending ? (
                     <>
                       <Button type="submit">
