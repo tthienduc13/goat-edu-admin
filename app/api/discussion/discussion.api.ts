@@ -4,7 +4,8 @@ export const END_POINT = {
   GET_BY_ID: '/discussion',
   GET_BY_USER: '/discussion/user',
   GET_ALL: '/discussion',
-  CREATE: '/discussion'
+  CREATE: '/discussion',
+  APPROVE: '/moder/discussion'
 };
 
 export const getAllDiscussion = async ({
@@ -59,4 +60,38 @@ export const getAllDiscussion = async ({
     console.error('Error fetching discussions:', error);
     throw error;
   }
+};
+
+export const getDiscussionById = async ({
+  token,
+  id
+}: {
+  token: string;
+  id: string;
+}): Promise<Discussion> => {
+  const response = await axiosClient.get(`${END_POINT.GET_BY_ID}/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+  return response.data.data;
+};
+
+export const approveDiscussion = async ({
+  token,
+  id
+}: {
+  token: string;
+  id: string;
+}) => {
+  const response = await axiosClient.post(
+    `${END_POINT.APPROVE}/${id}`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  );
+  return response.data;
 };

@@ -10,7 +10,6 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Discussion } from '@/types/discussion';
-import { Subject } from '@/types/subject';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -66,7 +65,7 @@ export const DiscussionCellAction: React.FC<CellActionProps> = ({ data }) => {
 
           <DropdownMenuItem>
             <Link className="flex" href={`/dashboard/discussion/${data.id}`}>
-              <Edit className="mr-2 h-4 w-4" /> Update
+              <Edit className="mr-2 h-4 w-4" /> Preview
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
