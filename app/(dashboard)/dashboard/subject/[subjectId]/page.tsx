@@ -104,7 +104,6 @@ const SubjectDetailPage = ({ params }: SubjectDetailPageProps) => {
           params.subjectId,
           session.data?.user?.token as string
         );
-        console.log(chapterBySubject);
 
         setChapterList(chapterBySubject);
 
@@ -341,13 +340,13 @@ const SubjectDetailPage = ({ params }: SubjectDetailPageProps) => {
                   </FormItem>
                 )}
               />
-              <div className="w-full">
+              <div className="h-[200px] w-[355px]">
                 <Image
-                  src={preview ? preview : sampleImage}
-                  height={200}
+                  src={preview ? preview : (subject?.image as string)}
+                  height={0}
                   width={0}
                   alt="No data"
-                  className="w-full rounded-2xl object-fill"
+                  className="h-full w-full rounded-2xl object-fill"
                 ></Image>
               </div>
               <div className="flex w-full justify-end">

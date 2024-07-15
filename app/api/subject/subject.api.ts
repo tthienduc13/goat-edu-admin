@@ -3,7 +3,7 @@ import { SubjectSchema } from '@/schemas';
 import { Subject } from '@/types/subject';
 import * as z from 'zod';
 const END_POINT = {
-  GET_SUBJECT: '/subject',
+  GET_SUBJECT: '/moder/subject',
   GET_BY_ID: '/subject',
   PATCH_SUBJECT: '/subject',
   DELETE_SUBJECT: '/subject'
@@ -15,7 +15,7 @@ export const getSubject = async (
   pageNum: number
 ) => {
   const response = await axiosClient.get(
-    `${END_POINT.GET_SUBJECT}?page_size=${pageSize}&page_number=${pageNum}`,
+    `moder?page_size=${pageSize}&page_number=${pageNum}`,
     {
       headers: {
         Authorization: `Bearer ${token}`
