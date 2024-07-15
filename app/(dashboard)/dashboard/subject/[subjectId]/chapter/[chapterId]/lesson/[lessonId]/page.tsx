@@ -1,6 +1,8 @@
 'use client';
 import * as z from 'zod';
 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 import {
   Form,
   FormControl,
@@ -30,6 +32,10 @@ import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { UpdateLessonAction } from '@/actions/lesson/update-lesson';
 import { useToast } from '@/components/ui/use-toast';
 import LessonFormLoading from '@/app/(dashboard)/dashboard/subject/_components/lesson/lesson-form-loading';
+import { Separator } from '@/components/ui/separator';
+import LessonTheory from './_components/theory/lesson-theory';
+import LessonFlashCard from './_components/theory-flashcard/lesson-flashcard';
+import LessonQuiz from './_components/quiz/lesson-quiz';
 interface LessonDetailPageProps {
   params: {
     subjectId: string;
@@ -39,14 +45,26 @@ interface LessonDetailPageProps {
 }
 
 const LessonDetailPage = ({ params }: LessonDetailPageProps) => {
+  const source = {
+    theory: 'Theory',
+    theoryFlashcard: 'TheoryFlashCard',
+    quiz: 'Quiz'
+  };
+
   const { subjectId, chapterId, lessonId } = params;
+
+  const [display, setDisplay] = useState<string>('Theory');
+
   const [isPending, setIsPending] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const [lessonData, setLessonData] = useState<Lesson>();
+
   const router = useRouter();
   const { toast } = useToast();
   const session = useSession();
+
   const handleGoBack = () => {
     router.back();
   };
@@ -71,7 +89,6 @@ const LessonDetailPage = ({ params }: LessonDetailPageProps) => {
           session.data?.user?.token as string
         );
         setLessonData(lessonResponse);
-
         form.reset({
           displayOrder: lessonResponse.displayOrder,
           lessonBody: lessonResponse.lessonBody,
@@ -85,6 +102,10 @@ const LessonDetailPage = ({ params }: LessonDetailPageProps) => {
     };
     fetchLesson();
   }, [subjectId, chapterId, lessonId]);
+
+  const hanldeOnClick = (value: string) => {
+    setDisplay(value);
+  };
 
   const onSubmit = async (values: z.infer<typeof LessonSchema>) => {
     if (session.data !== null) {
@@ -117,7 +138,7 @@ const LessonDetailPage = ({ params }: LessonDetailPageProps) => {
   };
 
   return (
-    <div className="w-full space-y-4 p-8">
+    <div className="max-h-screen w-full space-y-4 overflow-y-auto p-8">
       <Button onClick={handleGoBack} className="space-x-2">
         <CornerDownLeft /> <span>Go back</span>
       </Button>
@@ -231,6 +252,57 @@ const LessonDetailPage = ({ params }: LessonDetailPageProps) => {
           </Form>
         </>
       )}
+      <Separator />
+      <Heading
+        title="Lesson resource."
+        description="Manage Subject (Client side table functionalities.)"
+      />
+      <Tabs defaultValue="Theory">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger
+            onClick={() => hanldeOnClick(source.theory)}
+            value={source.theory}
+          >
+            Theory
+          </TabsTrigger>
+          <TabsTrigger
+            onClick={() => hanldeOnClick(source.theoryFlashcard)}
+            value={source.theoryFlashcard}
+          >
+            FlashCard
+          </TabsTrigger>
+          <TabsTrigger
+            onClick={() => hanldeOnClick(source.quiz)}
+            value={source.quiz}
+          >
+            Quiz
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
+      {lessonData &&
+        (display === source.theory ? (
+          <LessonTheory
+            lessonId={lessonId}
+            lessonName={lessonData.lessonName}
+            token={session.data?.user?.token as string}
+            params={params}
+          />
+        ) : display === source.theoryFlashcard ? (
+          <LessonFlashCard
+            lessonId={lessonId}
+            lessonName={lessonData.lessonName}
+            token={session.data?.user?.token as string}
+          />
+        ) : display === source.quiz ? (
+          <LessonQuiz
+            lessonId={lessonId}
+            lessonName={lessonData.lessonName}
+            token={session.data?.user?.token as string}
+            params={params}
+          />
+        ) : (
+          <></>
+        ))}
     </div>
   );
 };

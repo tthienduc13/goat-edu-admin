@@ -7,3 +7,9 @@ export type TheoryFlashCardContent = {
   createAt: Date;
   updateAt: Date;
 };
+
+export type FlashcardContent = {
+  id: string;
+  frontHTML: string | JSX.Element;
+  backHTML: string | JSX.Element;
+};

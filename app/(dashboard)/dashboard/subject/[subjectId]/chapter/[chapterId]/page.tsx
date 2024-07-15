@@ -132,7 +132,7 @@ const ChapterDetailPage = ({ params }: ChapterDetailPageProps) => {
     }
   };
   return (
-    <div className="max-h-screen space-y-4 overflow-y-auto p-8">
+    <div className="max-h-screen w-full space-y-4 overflow-y-auto p-8">
       <Button onClick={handleGoBack} className="space-x-2">
         <CornerDownLeft /> <span>Go back</span>
       </Button>
