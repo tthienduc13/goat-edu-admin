@@ -30,6 +30,9 @@ import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { UpdateLessonAction } from '@/actions/lesson/update-lesson';
 import { useToast } from '@/components/ui/use-toast';
 import LessonFormLoading from '@/app/(dashboard)/dashboard/subject/_components/lesson/lesson-form-loading';
+import { Separator } from '@/components/ui/separator';
+import LessonTheory from './_components/theory/lesson-theory';
+import LessonFlashCard from './_components/theory-flashcard/lesson-flashcard';
 interface LessonDetailPageProps {
   params: {
     subjectId: string;
@@ -39,14 +42,26 @@ interface LessonDetailPageProps {
 }
 
 const LessonDetailPage = ({ params }: LessonDetailPageProps) => {
+  const source = {
+    theory: 'Theory',
+    theoryFlashcard: 'TheoryFlashCard',
+    quiz: 'Quiz'
+  };
+
   const { subjectId, chapterId, lessonId } = params;
+
+  const [display, setDisplay] = useState<string>('Theory');
+
   const [isPending, setIsPending] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const [lessonData, setLessonData] = useState<Lesson>();
+
   const router = useRouter();
   const { toast } = useToast();
   const session = useSession();
+
   const handleGoBack = () => {
     router.back();
   };
@@ -71,7 +86,6 @@ const LessonDetailPage = ({ params }: LessonDetailPageProps) => {
           session.data?.user?.token as string
         );
         setLessonData(lessonResponse);
-
         form.reset({
           displayOrder: lessonResponse.displayOrder,
           lessonBody: lessonResponse.lessonBody,
@@ -117,7 +131,7 @@ const LessonDetailPage = ({ params }: LessonDetailPageProps) => {
   };
 
   return (
-    <div className="w-full space-y-4 p-8">
+    <div className="max-h-screen w-full space-y-4 overflow-y-auto p-8">
       <Button onClick={handleGoBack} className="space-x-2">
         <CornerDownLeft /> <span>Go back</span>
       </Button>
@@ -231,6 +245,28 @@ const LessonDetailPage = ({ params }: LessonDetailPageProps) => {
           </Form>
         </>
       )}
+      <Separator />
+      <Heading
+        title="Lesson resource."
+        description="Manage Subject (Client side table functionalities.)"
+      />
+      {lessonData &&
+        (display === source.theory ? (
+          <LessonTheory
+            lessonId={lessonId}
+            lessonName={lessonData.lessonName}
+            token={session.data?.user?.token as string}
+            params={params}
+          />
+        ) : display === source.theoryFlashcard ? (
+          <LessonFlashCard
+            lessonId={lessonId}
+            lessonName={lessonData.lessonName}
+            token={session.data?.user?.token as string}
+          />
+        ) : (
+          <></>
+        ))}
     </div>
   );
 };
