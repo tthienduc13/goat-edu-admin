@@ -58,6 +58,7 @@ const DiscussionManagementPage = () => {
       }
     };
     fetchDiscussion();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [discussionStatus, currentPageNum, sortDirection]);
   const handleNextPage = () => {
     setCurrentPageNum(currentPageNum + 1);
@@ -124,7 +125,7 @@ const DiscussionManagementPage = () => {
         ) : (
           <Heading
             title={`Discussion (${pagination?.TotalCount})`}
-            description="Manage Subject (Client side table functionalities.)"
+            description="Manage Discussion "
           />
         )}
         {!isLoading && (
