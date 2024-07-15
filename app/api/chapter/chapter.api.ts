@@ -6,7 +6,8 @@ import * as z from 'zod';
 const END_POINT = {
   CREAT_CHAPTER: '/chapter',
   GET_CHAPTER: '/chapter',
-  DELETE_CHAPTER: '/chapter'
+  DELETE_CHAPTER: '/chapter',
+  GET_CHAPTER_BY_SUBJECT: '/subject'
 };
 
 export const createChapter = async (
@@ -69,4 +70,19 @@ export const deleteChapter = (id: string, token: string) => {
     }
   });
   return response;
+};
+
+export const getChaptersBySubject = async (
+  subjectId: string,
+  token: string
+): Promise<Chapter[]> => {
+  const response = await axiosClient.get(
+    `${END_POINT.GET_CHAPTER_BY_SUBJECT}/${subjectId}/chapters`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  );
+  return response.data;
 };

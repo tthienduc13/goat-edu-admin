@@ -1,6 +1,8 @@
 'use client';
 import * as z from 'zod';
 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 import {
   Form,
   FormControl,
@@ -33,6 +35,7 @@ import LessonFormLoading from '@/app/(dashboard)/dashboard/subject/_components/l
 import { Separator } from '@/components/ui/separator';
 import LessonTheory from './_components/theory/lesson-theory';
 import LessonFlashCard from './_components/theory-flashcard/lesson-flashcard';
+import LessonQuiz from './_components/quiz/lesson-quiz';
 interface LessonDetailPageProps {
   params: {
     subjectId: string;
@@ -99,6 +102,10 @@ const LessonDetailPage = ({ params }: LessonDetailPageProps) => {
     };
     fetchLesson();
   }, [subjectId, chapterId, lessonId]);
+
+  const hanldeOnClick = (value: string) => {
+    setDisplay(value);
+  };
 
   const onSubmit = async (values: z.infer<typeof LessonSchema>) => {
     if (session.data !== null) {
@@ -250,6 +257,28 @@ const LessonDetailPage = ({ params }: LessonDetailPageProps) => {
         title="Lesson resource."
         description="Manage Subject (Client side table functionalities.)"
       />
+      <Tabs defaultValue="Theory">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger
+            onClick={() => hanldeOnClick(source.theory)}
+            value={source.theory}
+          >
+            Theory
+          </TabsTrigger>
+          <TabsTrigger
+            onClick={() => hanldeOnClick(source.theoryFlashcard)}
+            value={source.theoryFlashcard}
+          >
+            FlashCard
+          </TabsTrigger>
+          <TabsTrigger
+            onClick={() => hanldeOnClick(source.quiz)}
+            value={source.quiz}
+          >
+            Quiz
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
       {lessonData &&
         (display === source.theory ? (
           <LessonTheory
@@ -263,6 +292,13 @@ const LessonDetailPage = ({ params }: LessonDetailPageProps) => {
             lessonId={lessonId}
             lessonName={lessonData.lessonName}
             token={session.data?.user?.token as string}
+          />
+        ) : display === source.quiz ? (
+          <LessonQuiz
+            lessonId={lessonId}
+            lessonName={lessonData.lessonName}
+            token={session.data?.user?.token as string}
+            params={params}
           />
         ) : (
           <></>

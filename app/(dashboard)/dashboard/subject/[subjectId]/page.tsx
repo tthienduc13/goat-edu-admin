@@ -54,6 +54,7 @@ import { CornerDownLeft } from 'lucide-react';
 import ChapterList from '../_components/chapter/chapter-list';
 import { Chapter } from '@/types/chapter';
 import { Textarea } from '@/components/ui/textarea';
+import { getChaptersBySubject } from '@/app/api/chapter/chapter.api';
 interface SubjectDetailPageProps {
   params: { subjectId: string };
 }
@@ -99,7 +100,14 @@ const SubjectDetailPage = ({ params }: SubjectDetailPageProps) => {
           session.data?.user?.token as string
         );
         setSubject(response);
-        setChapterList(response.chapters);
+        const chapterBySubject = await getChaptersBySubject(
+          params.subjectId,
+          session.data?.user?.token as string
+        );
+        console.log(chapterBySubject);
+
+        setChapterList(chapterBySubject);
+
         form.reset({
           subjectName: response.subjectName,
           subjectCode: response.subjectCode,
@@ -365,7 +373,7 @@ const SubjectDetailPage = ({ params }: SubjectDetailPageProps) => {
       <ChapterList
         subjectId={subject?.id}
         data={chapterList}
-        numOfChapters={subject?.numberOfChapters}
+        numOfChapters={chapterList?.length}
         isLoading={isLoading}
       />
     </div>
