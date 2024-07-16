@@ -38,7 +38,8 @@ const TheoryCreatePage = ({ params }: TheoryCreatePageProps) => {
           HtmlContent,
           params.lessonId
         );
-        if (response.status === 201) {
+
+        if (response.status === 200) {
           toast.success('Created theory successfully !');
           router.back();
         } else {
@@ -51,7 +52,7 @@ const TheoryCreatePage = ({ params }: TheoryCreatePageProps) => {
   };
 
   return (
-    <div className="w-full space-y-4 p-8">
+    <div className=" w-full space-y-4  p-8">
       <Button onClick={handleGoBack} className="space-x-2">
         <CornerDownLeft /> <span>Go back</span>
       </Button>
