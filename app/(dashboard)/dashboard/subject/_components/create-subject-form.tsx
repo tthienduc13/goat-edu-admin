@@ -92,22 +92,30 @@ const SubjectCreateForm = () => {
   const onSubmit = async (values: z.infer<typeof SubjectSchema>) => {
     if (session.data !== null) {
       try {
-        setIsPending(!isPending);
-        const newFormData = { ...values, subjectImage: imageState };
-        const updateResponse = await CreateSubjectAction(
-          session.data?.user?.token as string,
-          newFormData
-        );
-        if (updateResponse === 200) {
+        if (!imageState || imageState === null || imageState === undefined) {
           toast({
-            description: `Subject created successfully !`
-          });
-          router.push('/dashboard/subject');
-        } else {
-          toast({
-            description: `Failed to create Subject`,
+            description: `You need to add picture !`,
             variant: 'destructive'
           });
+          return;
+        } else {
+          setIsPending(!isPending);
+          const newFormData = { ...values, subjectImage: imageState };
+          const updateResponse = await CreateSubjectAction(
+            session.data?.user?.token as string,
+            newFormData
+          );
+          if (updateResponse === 200) {
+            toast({
+              description: `Subject created successfully !`
+            });
+            router.push('/dashboard/subject');
+          } else {
+            toast({
+              description: `Failed to create Subject`,
+              variant: 'destructive'
+            });
+          }
         }
       } catch (error: any) {
         toast({
