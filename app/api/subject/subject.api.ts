@@ -15,7 +15,7 @@ export const getSubject = async (
   pageNum: number
 ) => {
   const response = await axiosClient.get(
-    `moder?page_size=${pageSize}&page_number=${pageNum}`,
+    `${END_POINT.GET_SUBJECT}?page_size=${pageSize}&page_number=${pageNum}`,
     {
       headers: {
         Authorization: `Bearer ${token}`
