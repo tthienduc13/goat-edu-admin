@@ -3,7 +3,7 @@
 import * as z from 'zod';
 
 import { currentUser } from '@/lib/auth';
-import { TheoryFlashcardSchema } from '@/schemas';
+import { TheoryFlashcardSchema } from '@/schemas/theory-flashcard';
 import { createTheoryFlashcard } from '@/app/api/theory-flashcard/theory-flashcard.api';
 
 export const CreateTheoryFlashcard = async ({

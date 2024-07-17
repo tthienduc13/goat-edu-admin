@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import Link from 'next/link';
+import FlashcardLoading from '../theory-flashcard/lesson-flashcard-loading';
 
 interface LessonTheoryProps {
   lessonId: string;
@@ -58,7 +59,6 @@ const LessonTheory = ({
       try {
         setTheoryLoading(!theoryLoading);
         const response = await getTheoryByLesson({ lessonId, token });
-        console.log(response.id);
         setTheoryData(response);
         setJsonContent(response.theoryContent);
         setHtmlContent(response.file);
@@ -70,41 +70,49 @@ const LessonTheory = ({
     fetchTheory();
   }, [lessonId]);
 
-  if (!theoryData) {
-    return (
-      <div className="w-full">
-        <div className="flex w-full justify-center">
-          <Link
-            href={`/dashboard/subject/${params.subjectId}/chapter/${params.chapterId}/lesson/${lessonId}/theory/create`}
-          >
-            <Button>Create</Button>
-          </Link>
-        </div>
-        <Empty />
-      </div>
-    );
+  // if (!theoryData) {
+  //   return (
+
+  //   );
+  // }
+  if (theoryLoading) {
+    return <FlashcardLoading />;
   }
   return (
     <div className="w-full space-y-8">
-      <div className="flex w-full justify-between">
-        <h1 className="text-3xl font-semibold">Theory</h1>
-        <Button disabled={isPending} onClick={handleSaveTheory}>
-          {isPending ? (
-            <>
-              <AiOutlineLoading3Quarters className="mr-2 h-4 w-4 animate-spin" />
-              Saving
-            </>
-          ) : (
-            'Save'
-          )}
-        </Button>
-      </div>
-
-      <Editor
-        setJsonContent={setJsonContent}
-        setHtmlContent={setHtmlContent}
-        initialData={theoryData.theoryContent}
-      />
+      {!theoryData ? (
+        <div className="w-full">
+          <Empty />
+          <div className="flex w-full justify-center">
+            <Link
+              href={`/dashboard/subject/${params.subjectId}/chapter/${params.chapterId}/lesson/${lessonId}/theory/create`}
+            >
+              <Button>Create</Button>
+            </Link>
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className="flex w-full justify-between">
+            <h1 className="text-3xl font-semibold">Theory</h1>
+            <Button disabled={isPending} onClick={handleSaveTheory}>
+              {isPending ? (
+                <>
+                  <AiOutlineLoading3Quarters className="mr-2 h-4 w-4 animate-spin" />
+                  Saving
+                </>
+              ) : (
+                'Save'
+              )}
+            </Button>
+          </div>
+          <Editor
+            setJsonContent={setJsonContent}
+            setHtmlContent={setHtmlContent}
+            initialData={theoryData.theoryContent}
+          />
+        </>
+      )}
     </div>
   );
 };

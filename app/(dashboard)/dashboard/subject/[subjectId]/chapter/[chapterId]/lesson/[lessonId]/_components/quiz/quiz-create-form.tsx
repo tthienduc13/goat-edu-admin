@@ -22,94 +22,97 @@ import {
   SortableItem
 } from '@/components/ui/sortable';
 
-import { FileImage, Loader2, PencilLine, Plus } from 'lucide-react';
+import {
+  CornerDownLeft,
+  FileImage,
+  Loader2,
+  PencilLine,
+  Plus
+} from 'lucide-react';
 import { useEffect, useState, useTransition } from 'react';
-import { ImportTerms } from './import-terms';
-import { KeyBoardShorcuts } from './keyboard-shorcuts';
-import { TheoryFlashcardSchema } from '@/schemas/theory-flashcard';
-import { TheoryFlashCardContent } from '@/types/theory-flashcard-content';
-import { getTheoryFlashcard } from '@/app/api/theory-flashcard/theory-flashcard.api';
-import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { KeyBoardShorcuts } from '../theory-flashcard/keyboard-shorcuts';
+import { QuestionInQuizSchema } from '@/schemas/quiz';
+import { CreateQuestionQuiz } from '@/actions/create-question-in-quiz';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
+import { Heading } from '@/components/ui/heading';
 
-export const EditFlashcardContentForm = () => {
-  const theoryId = 'id o day';
-  const user = useCurrentUser();
+interface CreateQuizFormProps {
+  params: {
+    subjectId: string;
+    chapterId: string;
+    lessonId: string;
+    quizId: string;
+  };
+}
 
-  const [initialData, setInitialData] = useState<TheoryFlashCardContent[]>();
+export const CreateQuizForm = ({ params }: CreateQuizFormProps) => {
+  const quizId = params.quizId;
+
   const [isPending, startTransition] = useTransition();
-  const [isOpenImage, setIsOpenImage] = useState<boolean>();
 
-  const handleFetchData = async () => {
-    const response = await getTheoryFlashcard({
-      token: user?.token!,
-      theoryId: theoryId
-    });
-    setInitialData(response);
+  const router = useRouter();
+
+  const handleGoBack = () => {
+    router.back();
   };
 
-  useEffect(() => {
-    handleFetchData();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const form = useForm<z.infer<typeof TheoryFlashcardSchema>>({
-    resolver: zodResolver(TheoryFlashcardSchema),
+  const form = useForm<z.infer<typeof QuestionInQuizSchema>>({
+    resolver: zodResolver(QuestionInQuizSchema),
     mode: 'onChange',
     defaultValues: {
-      flashcardContent: []
+      quiz: [
+        {
+          quizQuestion: '',
+          quizAnswer1: '',
+          quizAnswer2: '',
+          quizAnswer3: '',
+          quizCorrect: ''
+        },
+        {
+          quizQuestion: '',
+          quizAnswer1: '',
+          quizAnswer2: '',
+          quizAnswer3: '',
+          quizCorrect: ''
+        },
+        {
+          quizQuestion: '',
+          quizAnswer1: '',
+          quizAnswer2: '',
+          quizAnswer3: '',
+          quizCorrect: ''
+        }
+      ]
     }
   });
 
-  const handleOpenImage = () => {
-    setIsOpenImage(!isOpenImage);
-  };
-
   const handleInsertNew = () => {
     append({
-      question: '',
-      answer: ''
+      quizQuestion: '',
+      quizAnswer1: '',
+      quizAnswer2: '',
+      quizAnswer3: '',
+      quizCorrect: ''
     });
   };
 
-  useEffect(() => {
-    if (initialData) {
-      form.reset({
-        flashcardContent: initialData.map((item) => ({
-          question: item.question,
-          answer: item.answer
-        }))
+  const onSubmit = (values: z.infer<typeof QuestionInQuizSchema>) => {
+    startTransition(() => {
+      CreateQuestionQuiz({ values: values, quizId: quizId }).then((data) => {
+        if (data.success) {
+          toast.success(data.success);
+          router.back();
+        } else {
+          toast.error(data.error);
+        }
       });
-    }
-  }, [initialData, form]);
-
-  const onSubmit = (values: z.infer<typeof TheoryFlashcardSchema>) => {
-    const startIndex = initialData?.length;
-    const newValues = values.flashcardContent.slice(startIndex).map((data) => {
-      return {
-        id: '',
-        question: data.question,
-        answer: data.answer,
-        // Check status
-        status: 'Open'
-      };
     });
-    const convertData = (data: TheoryFlashCardContent[]) => {
-      return data.map((item: TheoryFlashCardContent) => ({
-        id: item.id,
-        question: item.question,
-        answer: item.answer,
-        status: item.status
-      }));
-    };
-    const sendValues = [...convertData(initialData!), ...newValues];
-    console.log(sendValues);
-    // Call api patch flashcard content here
   };
 
-  const { fields, append, move, remove, prepend } = useFieldArray({
+  const { fields, append, move, remove } = useFieldArray({
     control: form.control,
-    name: 'flashcardContent'
+    name: 'quiz'
   });
 
   useEffect(() => {
@@ -129,19 +132,15 @@ export const EditFlashcardContentForm = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleImport = (
-    flashcardContent: { question: string; answer: string }[]
-  ) => {
-    prepend(
-      flashcardContent.map((content) => ({
-        question: content.question,
-        answer: content.answer
-      }))
-    );
-  };
-
   return (
-    <div className="w-full">
+    <div className="w-full space-y-4 p-8">
+      <Button onClick={handleGoBack} className="space-x-2">
+        <CornerDownLeft /> <span>Go back</span>
+      </Button>
+      <Heading
+        title="Quiz create section"
+        description="Manage Subject (Client side table functionalities.)"
+      />
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -151,7 +150,9 @@ export const EditFlashcardContentForm = () => {
             <div className="flex flex-col gap-y-1">
               <div className="flex w-full flex-row items-center gap-x-2">
                 <PencilLine className="h-4 w-4" />
-                <div className="text-xl font-semibold">Create a new set</div>
+                <div className="text-xl font-semibold">
+                  Create a new quiz set
+                </div>
               </div>
               <div className="text-sm text-muted-foreground">
                 {fields.length} terms
@@ -174,30 +175,7 @@ export const EditFlashcardContentForm = () => {
               )}
             </Button>
           </div>
-          {/* Theory Infor */}
-          <div className="flex flex-col gap-y-4">
-            <div className="flex w-full flex-col gap-y-5">
-              <div className="flex flex-row items-center overflow-hidden rounded-xl px-4">
-                <div className="flex w-full cursor-none flex-col text-5xl font-bold">
-                  {/* {theoryName} */}
-                </div>
-              </div>
-              <div className="flex w-full flex-row gap-x-5">
-                <div className="flex  h-12 w-full flex-row items-center overflow-hidden rounded-xl bg-[#a8b3cf14] px-4">
-                  <div className="flex w-full cursor-none flex-col text-base text-muted-foreground">
-                    {/* {theoryDescription} */}
-                  </div>
-                </div>
-                <div className="flex h-12 w-full flex-row items-center overflow-hidden rounded-xl bg-[#a8b3cf14] px-4">
-                  <div className="flex w-full cursor-none flex-col text-muted-foreground">
-                    {/* {flashcardData?.subjectName} */}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
           <div className="flex flex-row justify-between">
-            <ImportTerms onImport={handleImport} />
             <div className="flex flex-row items-center gap-x-2">
               <KeyBoardShorcuts />
             </div>
@@ -248,10 +226,10 @@ export const EditFlashcardContentForm = () => {
                           </Button>
                         </div>
                       </div>
-                      <div className="flex w-full flex-row gap-x-8 p-4">
+                      <div className="flex w-full flex-row flex-wrap space-y-4 p-4">
                         <FormField
                           control={form.control}
-                          name={`flashcardContent.${index}.question`}
+                          name={`quiz.${index}.quizQuestion`}
                           render={({ field }) => (
                             <FormItem className="flex w-full flex-col">
                               <FormControl>
@@ -264,7 +242,7 @@ export const EditFlashcardContentForm = () => {
                               </FormControl>
                               <div className=" border-[1px] border-primary"></div>
                               <div className="text-xs font-semibold text-muted-foreground">
-                                FLASHCARD QUESTION
+                                QUIZ QUESTION
                               </div>
                               <FormMessage />
                             </FormItem>
@@ -272,7 +250,7 @@ export const EditFlashcardContentForm = () => {
                         />
                         <FormField
                           control={form.control}
-                          name={`flashcardContent.${index}.answer`}
+                          name={`quiz.${index}.quizAnswer1`}
                           render={({ field }) => (
                             <FormItem className="flex w-full flex-col">
                               <FormControl>
@@ -284,21 +262,72 @@ export const EditFlashcardContentForm = () => {
                               </FormControl>
                               <div className=" border-[1px] border-primary"></div>
                               <div className="text-xs font-semibold text-muted-foreground">
-                                FLASHCARD ANSWER
+                                QUIZ ANSWER 1
                               </div>
                               <FormMessage />
                             </FormItem>
                           )}
                         />
-                        <button
-                          onClick={handleOpenImage}
-                          className="flex max-h-[74px] flex-col items-center justify-center gap-y-1 rounded-lg border-[2px] border-dashed px-6 py-3"
-                        >
-                          <FileImage className="h-4 w-4" />
-                          <div className="text-xs font-semibold text-muted-foreground">
-                            IMAGE
-                          </div>
-                        </button>
+                        <FormField
+                          control={form.control}
+                          name={`quiz.${index}.quizAnswer2`}
+                          render={({ field }) => (
+                            <FormItem className="flex w-full flex-col">
+                              <FormControl>
+                                <Input
+                                  placeholder="Enter answer"
+                                  className="h-10 border-none text-lg shadow-none outline-none focus-visible:ring-0"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <div className=" border-[1px] border-primary"></div>
+                              <div className="text-xs font-semibold text-muted-foreground">
+                                QUIZ ANSWER 2
+                              </div>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`quiz.${index}.quizAnswer3`}
+                          render={({ field }) => (
+                            <FormItem className="flex w-full flex-col">
+                              <FormControl>
+                                <Input
+                                  placeholder="Enter answer"
+                                  className="h-10 border-none text-lg shadow-none outline-none focus-visible:ring-0"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <div className=" border-[1px] border-primary"></div>
+                              <div className="text-xs font-semibold text-muted-foreground">
+                                QUIZ ANSWER 3
+                              </div>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`quiz.${index}.quizCorrect`}
+                          render={({ field }) => (
+                            <FormItem className="flex w-full flex-col">
+                              <FormControl>
+                                <Input
+                                  placeholder="Enter answer"
+                                  className="h-10 border-none text-lg shadow-none outline-none focus-visible:ring-0"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <div className=" border-[1px] border-primary"></div>
+                              <div className="text-xs font-semibold text-muted-foreground">
+                                QUIZ CORRECT ANSWER
+                              </div>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                       </div>
                     </div>
                   </SortableItem>
@@ -314,7 +343,7 @@ export const EditFlashcardContentForm = () => {
                 onClick={handleInsertNew}
               >
                 <Plus className="mr-2 h-5 w-5 font-semibold" />
-                ADD CARD
+                ADD QUIZ
               </Button>
             </div>
           </div>

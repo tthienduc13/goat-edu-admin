@@ -1,12 +1,25 @@
 import * as z from 'zod';
 import axiosClient from '@/lib/axiosClient';
-import { TheoryFlashcardSchema } from '@/schemas';
+
 import { TheoryFlashCardContent } from '@/types/theory-flashcard-content';
+import {
+  FlashcardContentItemSchema,
+  TheoryFlashcardSchema
+} from '@/schemas/theory-flashcard';
 
 const END_POINT = {
   GET_THEORY_FLASHCARD_CONTENT: 'theory_flashcard/theory',
   CREATE: '/theory_flashcard/theory',
-  GET_BY_ID: '/theory_flashcard/theory'
+  GET_BY_ID: '/theory_flashcard/theory',
+  PATCH_BY_ID: '/theory_flashcard/theory',
+  DELETE_FLASHCARD_CONTENT: '/theory_flashcard'
+};
+
+export type FlashcardContentResponse = {
+  id: string;
+  question: string;
+  answer: string;
+  status: string;
 };
 
 export const getTheoryFlashcardContentByTheory = async ({
@@ -60,5 +73,38 @@ export const getTheoryFlashcard = async ({
       Authorization: `Bearer ${token}`
     }
   });
+  return response.data;
+};
+
+export const patchFlashcardContentTheoryById = async ({
+  token,
+  values,
+  id
+}: {
+  token: string;
+  id: string;
+  values: FlashcardContentResponse[];
+}) => {
+  const response = await axiosClient.patch(
+    `${END_POINT.PATCH_BY_ID}/${id}`,
+    values,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  );
+  return response.data;
+};
+
+export const deleteFlashcardContent = async (id: string, token: string) => {
+  const response = await axiosClient.delete(
+    `${END_POINT.DELETE_FLASHCARD_CONTENT}?guids=${id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  );
   return response.data;
 };

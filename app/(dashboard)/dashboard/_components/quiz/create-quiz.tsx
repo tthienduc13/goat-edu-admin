@@ -25,7 +25,7 @@ import {
 import { FileImage, Loader2, PencilLine, Plus } from 'lucide-react';
 import { useEffect, useState, useTransition } from 'react';
 import { KeyBoardShorcuts } from '../theory-flashcard/keyboard-shorcuts';
-import { QuestionInQuizSchema } from '@/schemas';
+import { QuestionInQuizSchema } from '@/schemas/quiz';
 import { CreateQuestionQuiz } from '@/actions/create-question-in-quiz';
 import { toast } from 'sonner';
 

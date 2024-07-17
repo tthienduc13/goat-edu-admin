@@ -22,42 +22,53 @@ import {
   SortableItem
 } from '@/components/ui/sortable';
 
-import { FileImage, Loader2, PencilLine, Plus } from 'lucide-react';
+import {
+  CornerDownLeft,
+  FileImage,
+  Loader2,
+  PencilLine,
+  Plus
+} from 'lucide-react';
 import { useEffect, useState, useTransition } from 'react';
+import { toast } from 'sonner';
 import { ImportTerms } from './import-terms';
 import { KeyBoardShorcuts } from './keyboard-shorcuts';
 import { TheoryFlashcardSchema } from '@/schemas/theory-flashcard';
-import { TheoryFlashCardContent } from '@/types/theory-flashcard-content';
-import { getTheoryFlashcard } from '@/app/api/theory-flashcard/theory-flashcard.api';
-import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { CreateTheoryFlashcard } from '@/actions/create-theory-flashcard';
+import { useRouter } from 'next/navigation';
 
-export const EditFlashcardContentForm = () => {
-  const theoryId = 'id o day';
-  const user = useCurrentUser();
+interface CreateFlashcardContentFormProps {
+  theoryId: string;
+}
 
-  const [initialData, setInitialData] = useState<TheoryFlashCardContent[]>();
+export const CreateFlashcardContentForm = ({
+  theoryId
+}: CreateFlashcardContentFormProps) => {
   const [isPending, startTransition] = useTransition();
   const [isOpenImage, setIsOpenImage] = useState<boolean>();
+  const router = useRouter();
 
-  const handleFetchData = async () => {
-    const response = await getTheoryFlashcard({
-      token: user?.token!,
-      theoryId: theoryId
-    });
-    setInitialData(response);
+  const handleGoBack = () => {
+    router.back();
   };
-
-  useEffect(() => {
-    handleFetchData();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const form = useForm<z.infer<typeof TheoryFlashcardSchema>>({
     resolver: zodResolver(TheoryFlashcardSchema),
     mode: 'onChange',
     defaultValues: {
-      flashcardContent: []
+      flashcardContent: [
+        {
+          question: '',
+          answer: ''
+        },
+        {
+          question: '',
+          answer: ''
+        },
+        {
+          question: '',
+          answer: ''
+        }
+      ]
     }
   });
 
@@ -72,39 +83,19 @@ export const EditFlashcardContentForm = () => {
     });
   };
 
-  useEffect(() => {
-    if (initialData) {
-      form.reset({
-        flashcardContent: initialData.map((item) => ({
-          question: item.question,
-          answer: item.answer
-        }))
-      });
-    }
-  }, [initialData, form]);
-
   const onSubmit = (values: z.infer<typeof TheoryFlashcardSchema>) => {
-    const startIndex = initialData?.length;
-    const newValues = values.flashcardContent.slice(startIndex).map((data) => {
-      return {
-        id: '',
-        question: data.question,
-        answer: data.answer,
-        // Check status
-        status: 'Open'
-      };
+    startTransition(() => {
+      CreateTheoryFlashcard({ values: values, theoryId: theoryId }).then(
+        (data) => {
+          if (data.success) {
+            toast.success(data.success);
+            router.back();
+          } else {
+            toast.error(data.error);
+          }
+        }
+      );
     });
-    const convertData = (data: TheoryFlashCardContent[]) => {
-      return data.map((item: TheoryFlashCardContent) => ({
-        id: item.id,
-        question: item.question,
-        answer: item.answer,
-        status: item.status
-      }));
-    };
-    const sendValues = [...convertData(initialData!), ...newValues];
-    console.log(sendValues);
-    // Call api patch flashcard content here
   };
 
   const { fields, append, move, remove, prepend } = useFieldArray({
@@ -141,7 +132,10 @@ export const EditFlashcardContentForm = () => {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full space-y-4">
+      <Button onClick={handleGoBack} className="space-x-2">
+        <CornerDownLeft /> <span>Go back</span>
+      </Button>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -173,28 +167,6 @@ export const EditFlashcardContentForm = () => {
                 <div>Create</div>
               )}
             </Button>
-          </div>
-          {/* Theory Infor */}
-          <div className="flex flex-col gap-y-4">
-            <div className="flex w-full flex-col gap-y-5">
-              <div className="flex flex-row items-center overflow-hidden rounded-xl px-4">
-                <div className="flex w-full cursor-none flex-col text-5xl font-bold">
-                  {/* {theoryName} */}
-                </div>
-              </div>
-              <div className="flex w-full flex-row gap-x-5">
-                <div className="flex  h-12 w-full flex-row items-center overflow-hidden rounded-xl bg-[#a8b3cf14] px-4">
-                  <div className="flex w-full cursor-none flex-col text-base text-muted-foreground">
-                    {/* {theoryDescription} */}
-                  </div>
-                </div>
-                <div className="flex h-12 w-full flex-row items-center overflow-hidden rounded-xl bg-[#a8b3cf14] px-4">
-                  <div className="flex w-full cursor-none flex-col text-muted-foreground">
-                    {/* {flashcardData?.subjectName} */}
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
           <div className="flex flex-row justify-between">
             <ImportTerms onImport={handleImport} />
@@ -290,15 +262,6 @@ export const EditFlashcardContentForm = () => {
                             </FormItem>
                           )}
                         />
-                        <button
-                          onClick={handleOpenImage}
-                          className="flex max-h-[74px] flex-col items-center justify-center gap-y-1 rounded-lg border-[2px] border-dashed px-6 py-3"
-                        >
-                          <FileImage className="h-4 w-4" />
-                          <div className="text-xs font-semibold text-muted-foreground">
-                            IMAGE
-                          </div>
-                        </button>
                       </div>
                     </div>
                   </SortableItem>
