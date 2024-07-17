@@ -3,7 +3,7 @@
 import * as z from 'zod';
 
 import { currentUser } from '@/lib/auth';
-import { QuestionInQuizSchema } from '@/schemas';
+import { QuestionInQuizSchema } from '@/schemas/quiz';
 import { createQuestionInQuiz } from '@/app/api/question-in-quiz/question-in-quiz.api';
 
 export const CreateQuestionQuiz = async ({

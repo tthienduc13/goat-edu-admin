@@ -27,7 +27,7 @@ import { useEffect, useState, useTransition } from 'react';
 import { toast } from 'sonner';
 import { ImportTerms } from './import-terms';
 import { KeyBoardShorcuts } from './keyboard-shorcuts';
-import { TheoryFlashcardSchema } from '@/schemas';
+import { TheoryFlashcardSchema } from '@/schemas/theory-flashcard';
 import { CreateTheoryFlashcard } from '@/actions/create-theory-flashcard';
 
 export const CreateFlashcardContentForm = () => {

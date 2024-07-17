@@ -22,36 +22,33 @@ import {
   SortableItem
 } from '@/components/ui/sortable';
 
-import { FileImage, Loader2, PencilLine, Plus } from 'lucide-react';
-import { useEffect, useState, useTransition } from 'react';
+import { Loader2, PencilLine, Plus } from 'lucide-react';
+import { useEffect, useTransition } from 'react';
 import { ImportTerms } from './import-terms';
 import { KeyBoardShorcuts } from './keyboard-shorcuts';
 import { TheoryFlashcardSchema } from '@/schemas/theory-flashcard';
 import { TheoryFlashCardContent } from '@/types/theory-flashcard-content';
-import { getTheoryFlashcard } from '@/app/api/theory-flashcard/theory-flashcard.api';
+import {
+  deleteFlashcardContent,
+  patchFlashcardContentTheoryById
+} from '@/app/api/theory-flashcard/theory-flashcard.api';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { toast } from '@/components/ui/use-toast';
 
-export const EditFlashcardContentForm = () => {
-  const theoryId = 'id o day';
+interface EditFlashcardContentFormProps {
+  theoryId: string;
+  initialData: TheoryFlashCardContent[];
+  token: string;
+}
+
+export const EditFlashcardContentForm = ({
+  theoryId,
+  initialData,
+  token
+}: EditFlashcardContentFormProps) => {
   const user = useCurrentUser();
 
-  const [initialData, setInitialData] = useState<TheoryFlashCardContent[]>();
   const [isPending, startTransition] = useTransition();
-  const [isOpenImage, setIsOpenImage] = useState<boolean>();
-
-  const handleFetchData = async () => {
-    const response = await getTheoryFlashcard({
-      token: user?.token!,
-      theoryId: theoryId
-    });
-    setInitialData(response);
-  };
-
-  useEffect(() => {
-    handleFetchData();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const form = useForm<z.infer<typeof TheoryFlashcardSchema>>({
     resolver: zodResolver(TheoryFlashcardSchema),
@@ -61,8 +58,16 @@ export const EditFlashcardContentForm = () => {
     }
   });
 
-  const handleOpenImage = () => {
-    setIsOpenImage(!isOpenImage);
+  const handleDelete = (index: number) => {
+    if (initialData) {
+      const selectedId = initialData[index]?.id;
+      if (!selectedId) {
+        remove(index);
+      } else {
+        deleteFlashcardContent(selectedId, token);
+        remove(index);
+      }
+    }
   };
 
   const handleInsertNew = () => {
@@ -103,8 +108,23 @@ export const EditFlashcardContentForm = () => {
       }));
     };
     const sendValues = [...convertData(initialData!), ...newValues];
-    console.log(sendValues);
-    // Call api patch flashcard content here
+    startTransition(async () => {
+      const patchFlashcard = await patchFlashcardContentTheoryById({
+        id: theoryId,
+        token: user?.token as string,
+        values: sendValues
+      });
+      if ((patchFlashcard.status = 200)) {
+        toast({
+          description: 'Update flashcard contents successfully !'
+        });
+      } else {
+        toast({
+          description: 'Failed update flashcard content !',
+          variant: 'destructive'
+        });
+      }
+    });
   };
 
   const { fields, append, move, remove, prepend } = useFieldArray({
@@ -151,7 +171,9 @@ export const EditFlashcardContentForm = () => {
             <div className="flex flex-col gap-y-1">
               <div className="flex w-full flex-row items-center gap-x-2">
                 <PencilLine className="h-4 w-4" />
-                <div className="text-xl font-semibold">Create a new set</div>
+                <div className="text-xl font-semibold">
+                  Edit flashcard content
+                </div>
               </div>
               <div className="text-sm text-muted-foreground">
                 {fields.length} terms
@@ -167,34 +189,12 @@ export const EditFlashcardContentForm = () => {
               {isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  <div>Creating</div>
+                  <div>Saving</div>
                 </>
               ) : (
-                <div>Create</div>
+                <div>Save</div>
               )}
             </Button>
-          </div>
-          {/* Theory Infor */}
-          <div className="flex flex-col gap-y-4">
-            <div className="flex w-full flex-col gap-y-5">
-              <div className="flex flex-row items-center overflow-hidden rounded-xl px-4">
-                <div className="flex w-full cursor-none flex-col text-5xl font-bold">
-                  {/* {theoryName} */}
-                </div>
-              </div>
-              <div className="flex w-full flex-row gap-x-5">
-                <div className="flex  h-12 w-full flex-row items-center overflow-hidden rounded-xl bg-[#a8b3cf14] px-4">
-                  <div className="flex w-full cursor-none flex-col text-base text-muted-foreground">
-                    {/* {theoryDescription} */}
-                  </div>
-                </div>
-                <div className="flex h-12 w-full flex-row items-center overflow-hidden rounded-xl bg-[#a8b3cf14] px-4">
-                  <div className="flex w-full cursor-none flex-col text-muted-foreground">
-                    {/* {flashcardData?.subjectName} */}
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
           <div className="flex flex-row justify-between">
             <ImportTerms onImport={handleImport} />
@@ -241,7 +241,7 @@ export const EditFlashcardContentForm = () => {
                             variant="ghost"
                             size="icon"
                             className="size-8 shrink-0"
-                            onClick={() => remove(index)}
+                            onClick={() => handleDelete(index)}
                           >
                             <TrashIcon className="size-5 " aria-hidden="true" />
                             <span className="sr-only">Remove</span>
@@ -290,15 +290,6 @@ export const EditFlashcardContentForm = () => {
                             </FormItem>
                           )}
                         />
-                        <button
-                          onClick={handleOpenImage}
-                          className="flex max-h-[74px] flex-col items-center justify-center gap-y-1 rounded-lg border-[2px] border-dashed px-6 py-3"
-                        >
-                          <FileImage className="h-4 w-4" />
-                          <div className="text-xs font-semibold text-muted-foreground">
-                            IMAGE
-                          </div>
-                        </button>
                       </div>
                     </div>
                   </SortableItem>

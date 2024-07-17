@@ -1,7 +1,7 @@
 'use client';
 import * as z from 'zod';
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import {
   Form,
@@ -292,6 +292,7 @@ const LessonDetailPage = ({ params }: LessonDetailPageProps) => {
             lessonId={lessonId}
             lessonName={lessonData.lessonName}
             token={session.data?.user?.token as string}
+            params={params}
           />
         ) : display === source.quiz ? (
           <LessonQuiz

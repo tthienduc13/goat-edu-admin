@@ -8,19 +8,29 @@ import {
 import Empty from '@/app/(dashboard)/dashboard/subject/_components/empty-state';
 import { getTheoryFlashcardContentByTheory } from '@/app/api/theory-flashcard/theory-flashcard.api';
 import { getTheoryByLesson } from '@/app/api/theory/theory.api';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { EditFlashcardContentForm } from './edit-theory-flashcard-content';
 
 interface LessonFlashCardProps {
   lessonName: string;
   lessonId: string;
   token: string;
+  params: {
+    subjectId: string;
+    chapterId: string;
+    lessonId: string;
+  };
 }
 
 const LessonFlashCard = ({
   lessonName,
   lessonId,
-  token
+  token,
+  params
 }: LessonFlashCardProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [theoryId, setTheoryId] = useState<string>('');
   const [flashcardContentData, setFlashcardContentData] =
     useState<TheoryFlashCardContent[]>();
   useEffect(() => {
@@ -31,12 +41,12 @@ const LessonFlashCard = ({
           lessonId: lessonId,
           token: token
         });
+        setTheoryId(theory.id);
         const response = await getTheoryFlashcardContentByTheory({
           id: theory.id,
           token: token
         });
         setFlashcardContentData(response);
-        console.log(response);
       } catch (error) {
       } finally {
         setIsLoading(false);
@@ -48,31 +58,51 @@ const LessonFlashCard = ({
   if (isLoading) {
     return <FlashcardLoading />;
   }
-  if (
-    !flashcardContentData ||
-    !Array.isArray(flashcardContentData) ||
-    flashcardContentData.length === 0
-  ) {
-    return <Empty />;
-  }
 
-  const data: FlashcardContent[] = flashcardContentData.map((flashcard) => ({
-    id: flashcard.id,
-    frontHTML: flashcard.question,
-    backHTML: flashcard.answer
-  }));
-
-  return (
-    <div className="w-full space-y-4">
-      <h1 className="text-3xl font-semibold">{lessonName}</h1>
-      <div className="flex h-full w-full items-center justify-center">
-        <div className="h-[500px] w-[800px] ">
-          hello
-          {/* <ArrayFlashcard data={data} /> */}
-        </div>
+  if (!theoryId) {
+    <div className="w-full">
+      <Empty />
+      <h3 className="font-medium">
+        Look like this lesson does not has a theory section
+      </h3>
+      <div className="flex w-full justify-center">
+        <Link
+          href={`/dashboard/subject/${params.subjectId}/chapter/${params.chapterId}/lesson/${params.lessonId}/theory/create`}
+        >
+          <Button>Create</Button>
+        </Link>
       </div>
-    </div>
-  );
+    </div>;
+  } else {
+    if (
+      !flashcardContentData ||
+      !Array.isArray(flashcardContentData) ||
+      flashcardContentData.length === 0
+    ) {
+      return (
+        <div className="w-full">
+          <Empty />
+          <div className="flex w-full justify-center">
+            <Link
+              href={`/dashboard/subject/${params.subjectId}/chapter/${params.chapterId}/lesson/${params.lessonId}/theory/${theoryId}/create-theory-flashcard`}
+            >
+              <Button>Create</Button>
+            </Link>
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div className="flex min-h-[calc(100vh-64px)]  w-full flex-col gap-y-10 p-8">
+          <EditFlashcardContentForm
+            theoryId={theoryId}
+            initialData={flashcardContentData}
+            token={token}
+          />
+        </div>
+      );
+    }
+  }
 };
 
 export default LessonFlashCard;
